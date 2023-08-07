@@ -17,6 +17,7 @@ A lot of this will be reading papers in order to collate ideas and consolidate m
 These are some existing papers in the area that are useful at the moment:
 - https://arxiv.org/pdf/2301.10226.pdf | Watermark on Large Language Models (LLM)
 - https://aclanthology.org/2022.findings-emnlp.370.pdf | Distillation-Resistant Watermarking
+- https://eprint.iacr.org/2023/763.pdf | Undetectable Watermarks for Language Models (Cryptographic Watermarking)
 
 ### Datasets
 We require a large number of essay documents. Some of which must be AI-generated.
