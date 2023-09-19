@@ -12,9 +12,8 @@
 
 ### Agenda
 
-- Intro [5 mins]
 - Talk about overarching goal or feasible direction [10 mins]
-- Display & discuss timeline [5 mins]
+- Display & discuss timeline [10 mins]
 - Required computation [5 mins]
 - Weekly meeting time and possible support that can be provided [5 mins]
 
@@ -26,6 +25,14 @@
 - I plan to focus on modifying an existing technique and give deeper statistics on essays in particular.
 - I also intend to include basic attacks to defeat watermarking and statistics around this - detection after attack.
 - Do you want to me send you any of the papers so far? 
+
+### Research Questions | Motivation
+
+#### These are questions that are to motivate and to be answered in this paper.
+
+- Can watermarking Large Language Models help aid efforts to maintain academic integrity? (Primary Question?)
+- Can current detection techniques correctly identify AI-generated essays?
+- Are watermarks protected against watermark evasion techniques?
 
 ### Meeting Minutes
 

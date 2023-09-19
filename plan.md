@@ -12,6 +12,7 @@ Week-by-week plan for the whole project. Updating this as I go along.
 * **Week 1**
   * Timeline project/Skeleton of plan.
   * Decide research direction and end-goal.
+  * Generate research questions to answer and structure dissertation
   * Implement Kirchenbauer Technique
 * **Week 2**
   * 
