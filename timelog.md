@@ -1,9 +1,9 @@
 # Timelog
 
-* PROJECT NAME
-* YOUR NAME
-* STUDENT_ID
-* SUPERVISOR NAME
+* Watermarking in Machine-Generated Text
+* Samuel Jackson
+* 2520998J
+* Dr. Jake Lever
 
 ## Guidance
 
@@ -12,15 +12,36 @@
 * This timelog should be filled out honestly, regularly (daily) and accurately. It is for *your* benefit.
 * Follow the structure provided, grouping time by weeks.  Quantise time to the half hour.
 
+## Week 0
+
+### 12 Sep 2023
+
+* *2 hours* Collect relevant papers
+* *1 hour* Collated papers into detection & watermarking
+* *1 hour* Powerpoint of papers
+
+### Week Summary 
+Hours Total: *4 hours*
+
 ## Week 1
 
-### 19 Oct 2019
+### 18 Sep 2023
 
-* *4 hours* Read the project guidance notes
-* *0.5 hour* Created GitLab repository and cloned the cookiecutter for the projects
-* *1 hour* Modified dissertation template, compiled  
+* *2 hours* Catchup on NLP through UofG GPT Coursera
 
-## 20 Oct 2019
+### 19 Sep 2023
 
-* *1 hour* meeting with supervisor
-* *2 hours* writing initial version of test harness
+* *1 hour* Read project guidelines/diss layout
+* *1 hour* Stanford Distortion Paper [Not Finished Review]
+* *0.5 hours* Setting up Markdowns
+* **TODO** *0.5 hours* Agenda/Questions for Jake
+
+### 20 Sep 2023
+
+* *0.5 hours* Meeting with Jake at 1PM
+* TODO *1 hour* Fix CUDA access on desktop
+
+
+### Week Summary
+Hours Total: Ongoing
+

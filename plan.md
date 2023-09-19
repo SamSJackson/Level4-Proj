@@ -1,16 +1,20 @@
 # Plan
 
-* PROJECT TITLE
-* YOUR NAME
-* STUDENT ID
-* SUPERVISOR NAME
+* Watermarking Machine-Generated Text
+* Samuel Jackson
+* 2520998J
+* Dr. Jake Lever
 
-Week-by-week plan for the whole project. Update this as you go along.
+Week-by-week plan for the whole project. Updating this as I go along.
 
 ## Winter semester
 
 * **Week 1**
+  * Timeline project/Skeleton of plan.
+  * Decide research direction and end-goal.
+  * Implement Kirchenbauer Technique
 * **Week 2**
+  * 
 * **Week 3**
 * **Week 4**
 * **Week 5**
