@@ -15,7 +15,7 @@ Week-by-week plan for the whole project. Updating this as I go along.
   * Generate research questions to answer and structure dissertation
   * Implement Kirchenbauer Technique
 * **Week 2**
-  * 
+  * Create evaluation metrics
 * **Week 3**
 * **Week 4**
 * **Week 5**

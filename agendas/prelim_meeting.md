@@ -24,16 +24,25 @@
 - Would it be reasonable to email some of the researchers in this topic and ask for opinions on research directions?
 - I plan to focus on modifying an existing technique and give deeper statistics on essays in particular.
 - I also intend to include basic attacks to defeat watermarking and statistics around this - detection after attack.
-- Do you want to me send you any of the papers so far? 
+- Do you want to me send you any of the papers so far?
 
+
+- [DetectGPT paper](https://arxiv.org/pdf/2301.11305.pdf) and [UC Santa Barbara](https://arxiv.org/pdf/2306.17439.pdf) both feel that paraphrasing attacks are an area requiring more research. Would this be a feasible direction? 
 ### Research Questions | Motivation
 
 #### These are questions that are to motivate and to be answered in this paper.
 
-- Can watermarking Large Language Models help aid efforts to maintain academic integrity? (Primary Question?)
+- Can watermarking Large Language Models help aid efforts to maintain academic integrity?
 - Can current detection techniques correctly identify AI-generated essays?
 - Are watermarks protected against watermark evasion techniques?
 
 ### Meeting Minutes
 
-
+- Try and focus on following one topic from a paper.
+- Arbitrary choices can lead to research quesitons
+- Keep on reading papers, select some of them
+- Between Paraphraser or Academic integrity
+- Reproducable functions
+- Perplexity could be used as degradation measure
+- Perplexity measured on separate model which is not 
+- ChatGPT structural probabilities.

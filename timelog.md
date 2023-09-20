@@ -34,10 +34,11 @@ Hours Total: *4 hours*
 * *1 hour* Read project guidelines/diss layout
 * *1 hour* Stanford Distortion Paper [Not Finished Review]
 * *0.5 hours* Setting up Markdowns
-* **TODO** *0.5 hours* Agenda/Questions for Jake
+* *0.5 hours* Agenda/Questions for Jake
 
 ### 20 Sep 2023
 
+* *2 hour* Briefly read papers [Vinu Sankar & Xuandong Zhao & Eric Mitchell]
 * *0.5 hours* Meeting with Jake at 1PM
 * TODO *1 hour* Fix CUDA access on desktop
 
