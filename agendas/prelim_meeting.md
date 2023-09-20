@@ -38,11 +38,29 @@
 
 ### Meeting Minutes
 
-- Try and focus on following one topic from a paper.
-- Arbitrary choices can lead to research quesitons
-- Keep on reading papers, select some of them
-- Between Paraphraser or Academic integrity
-- Reproducable functions
-- Perplexity could be used as degradation measure
-- Perplexity measured on separate model which is not 
-- ChatGPT structural probabilities.
+- Arbitrary choices can lead to research questions.
+- Keep on reading papers, select some of them to use as visible paper inspiration.
+- Between Paraphraser or Academic integrity [KEY PORTION]
+- Reproducable functions - don't have chunky notebooks, modularise portions.
+- Perplexity could be used as degradation measure.
+- Perplexity measured on separate model from the model used to generate watermarked text.
+- LLM structural differences - can this be considered in detection evaluation?
+- Write a note summarising each paper that I read so that I can quickly refer back to them.
+- Meetings should be on Tuesday weekly - time to be decided later.
+- First couple weeks should be reading and prepping a solid-base of research and goals.
+  - Shouldn't write any code until week 4 or 5. 
+
+### Summary
+
+- Research direction is either:
+  - Defense against Paraphrasing Attacks
+    - Two separate papers have proposed this as a further research topic.
+    - Defense against recursive paraphrasing has not been evaluated, yet.
+  - Evaluation of Watermarking Method against GPT-Produced Academic Essays
+    - Any essay produced by an LLM.
+    - Watermarking method undecided at the moment.
+
+### Next Meeting Goals
+
+- If not decided on direction formally propose both ideas, with pros and cons.
+

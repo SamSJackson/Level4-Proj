@@ -40,6 +40,10 @@ Hours Total: *4 hours*
 
 * *2 hour* Briefly read papers [Vinu Sankar & Xuandong Zhao & Eric Mitchell]
 * *0.5 hours* Meeting with Jake at 1PM
+* *0.5 hours* Post-meeting organisation and send summary to Jake
+
+### 21 Sep 2023
+
 * TODO *1 hour* Fix CUDA access on desktop
 
 
