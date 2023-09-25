@@ -13,9 +13,11 @@ Week-by-week plan for the whole project. Updating this as I go along.
   * Timeline project/Skeleton of plan.
   * Decide research direction and end-goal.
   * Generate research questions to answer and structure dissertation
-  * Implement Kirchenbauer Technique
 * **Week 2**
-  * Create evaluation metrics
+  * Find dataset for AI-generated conversational content.
+  * Generate hypothesis for investigating (expected results)
+  * Try out DIPPER (Paraphraser)
+  * Finish reading Stanford Watermarking paper
 * **Week 3**
 * **Week 4**
 * **Week 5**

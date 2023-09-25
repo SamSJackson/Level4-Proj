@@ -22,6 +22,12 @@
 
 - Notes throughout session
 
+### Summary
 
+- Summary of meeting
+
+### Next Meeting Goals
+
+- Things to do for next meeting
 
 
