@@ -42,11 +42,20 @@ Hours Total: *4 hours*
 * *0.5 hours* Meeting with Jake at 1PM
 * *0.5 hours* Post-meeting organisation and send summary to Jake
 
-### 21 Sep 2023
+### 24 Sep 2023
 
-* TODO *1 hour* Fix CUDA access on desktop
+* *1 hour* Attempted to fix CUDA
+* *0.5 hour* Decided to commit to paraphrase attacks
+* *0.5 hour* Quick investigation of [DIPPER](https://www.google.com/search?q=dipper+huggingface&client=firefox-b-d&sca_esv=567993882&sxsrf=AM9HkKn6_oFydVhCfC10MevVLEnnJlN8vA%3A1695557310349&ei=viYQZdL_FMK68gLZu6DoDA&ved=0ahUKEwjS1reZm8OBAxVCnVwKHdkdCM0Q4dUDCA8&uact=5&oq=dipper+huggingface&gs_lp=Egxnd3Mtd2l6LXNlcnAiEmRpcHBlciBodWdnaW5nZmFjZTIHECEYoAEYCkj7DlDqAVjHDnACeAGQAQCYAXOgAbcHqgEEMTEuMbgBA8gBAPgBAcICBxAjGLADGCfCAgoQABhHGNYEGLADwgIKEAAYigUYsAMYQ8ICDBAAGIoFGLADGAoYQ8ICDhAAGOQCGNYEGLAD2AEBwgIQEC4YigUYyAMYsAMYQ9gBAsICBxAjGIoFGCfCAgsQLhiABBjHARivAcICChAAGIoFGLEDGEPCAgcQABiKBRhDwgIHEC4YigUYQ8ICChAAGIAEGBQYhwLCAgUQABiABMICChAAGIAEGLEDGArCAgcQABiABBgKwgIGEAAYFhgewgIIEAAYFhgeGArCAggQABiKBRiGA8ICBhAAGB4YDcICChAAGAgYHhgNGArCAggQABgIGB4YDcICCBAAGAUYHhgN4gMEGAAgQYgGAZAGEboGBggBEAEYCboGBggCEAEYCA&sclient=gws-wiz-serp) from IR-based paper
+
+
+### Week Summary
+Hours Total: 10
+
+## Week 2 
+
+### 25 Sep 2023
 
 
 ### Week Summary
 Hours Total: Ongoing
-
