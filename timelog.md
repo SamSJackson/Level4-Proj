@@ -48,13 +48,22 @@ Hours Total: *4 hours*
 * *0.5 hour* Decided to commit to paraphrase attacks
 * *0.5 hour* Quick investigation of [DIPPER](https://www.google.com/search?q=dipper+huggingface&client=firefox-b-d&sca_esv=567993882&sxsrf=AM9HkKn6_oFydVhCfC10MevVLEnnJlN8vA%3A1695557310349&ei=viYQZdL_FMK68gLZu6DoDA&ved=0ahUKEwjS1reZm8OBAxVCnVwKHdkdCM0Q4dUDCA8&uact=5&oq=dipper+huggingface&gs_lp=Egxnd3Mtd2l6LXNlcnAiEmRpcHBlciBodWdnaW5nZmFjZTIHECEYoAEYCkj7DlDqAVjHDnACeAGQAQCYAXOgAbcHqgEEMTEuMbgBA8gBAPgBAcICBxAjGLADGCfCAgoQABhHGNYEGLADwgIKEAAYigUYsAMYQ8ICDBAAGIoFGLADGAoYQ8ICDhAAGOQCGNYEGLAD2AEBwgIQEC4YigUYyAMYsAMYQ9gBAsICBxAjGIoFGCfCAgsQLhiABBjHARivAcICChAAGIoFGLEDGEPCAgcQABiKBRhDwgIHEC4YigUYQ8ICChAAGIAEGBQYhwLCAgUQABiABMICChAAGIAEGLEDGArCAgcQABiABBgKwgIGEAAYFhgewgIIEAAYFhgeGArCAggQABiKBRiGA8ICBhAAGB4YDcICChAAGAgYHhgNGArCAggQABgIGB4YDcICCBAAGAUYHhgN4gMEGAAgQYgGAZAGEboGBggBEAEYCboGBggCEAEYCA&sclient=gws-wiz-serp) from IR-based paper
 
-
 ### Week Summary
 Hours Total: 10
 
-## Week 2 
+## Week 2
 
 ### 25 Sep 2023
+
+* *0.5 hour* Meeting Agenda/Prep
+* *1 hour* Try out DIPPER, too large to use
+
+### 26 Sep 2023
+
+* *1 hour* Meeting with Jake, organise meeting notes. 
+* *2.5 hours* Tried out all GPT models (learnt that 4*x = RAM required, where x is billions of parameters)
+
+### 27 Sep 2023
 
 
 ### Week Summary
