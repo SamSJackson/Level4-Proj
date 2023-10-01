@@ -63,8 +63,13 @@ Hours Total: 10
 * *1 hour* Meeting with Jake, organise meeting notes. 
 * *2.5 hours* Tried out all GPT models (learnt that 4*x = RAM required, where x is billions of parameters)
 
-### 27 Sep 2023
+### 28 Sep 2023
+* *1 hour* Access to LLaMa-2
+* *2 hours* LLaMa-2 Setup and Running Example
 
+### 01 Oct 2023
+* *0.5 hour* Learning how paraphrasers train & write-up
+* *2 hours* Implementing basic watermarking technique on GPT-2
 
 ### Week Summary
 Hours Total: Ongoing
