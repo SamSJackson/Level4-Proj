@@ -78,6 +78,7 @@ Hours Total: 10.5
 
 ### Oct 2 2023
 * *0.5 hour* Agenda for meeting/progress summary
+* *1 hour* Generation experimenting
 
 ### Oct 3 2023
 * *0.5 hour* Progress Meeting

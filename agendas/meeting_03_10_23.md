@@ -37,7 +37,8 @@
 - Is the degradation of text perplexity linear through paraphrasing?
 - Impact of short-context paraphraser vs long-context paraphraser?
 - Feasibility of use in academic context?
-- Is there a reasonable "minimum" text length for watermarking/paraphrasing?  
+- Is there a reasonable "minimum" text length for watermarking/paraphrasing? 
+- Impact of watermarking given different generation methods (greedy vs beam vs sampling)
 
 ### Meeting Minutes
 
