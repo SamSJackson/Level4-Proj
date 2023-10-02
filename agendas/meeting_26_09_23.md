@@ -60,7 +60,12 @@
 
 ### Summary
 
-- Summary content here
+- Try and generate some content - this will be necessary to create my dataset.
+- Look into how paraphrasers train and what datasets they use.
+- Fine-tuning is not feasible option for my computing power.
+- Causal models mainly, like GPT models
+- Methods on how to write the dissertation
+- Keep research questions as they can help guide thinking process and goals.
 
 
 

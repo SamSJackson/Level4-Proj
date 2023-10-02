@@ -20,7 +20,7 @@
 * *1 hour* Collated papers into detection & watermarking
 * *1 hour* Powerpoint of papers
 
-### Week Summary 
+### Week 0 Summary 
 Hours Total: *4 hours*
 
 ## Week 1
@@ -48,7 +48,7 @@ Hours Total: *4 hours*
 * *0.5 hour* Decided to commit to paraphrase attacks
 * *0.5 hour* Quick investigation of [DIPPER](https://www.google.com/search?q=dipper+huggingface&client=firefox-b-d&sca_esv=567993882&sxsrf=AM9HkKn6_oFydVhCfC10MevVLEnnJlN8vA%3A1695557310349&ei=viYQZdL_FMK68gLZu6DoDA&ved=0ahUKEwjS1reZm8OBAxVCnVwKHdkdCM0Q4dUDCA8&uact=5&oq=dipper+huggingface&gs_lp=Egxnd3Mtd2l6LXNlcnAiEmRpcHBlciBodWdnaW5nZmFjZTIHECEYoAEYCkj7DlDqAVjHDnACeAGQAQCYAXOgAbcHqgEEMTEuMbgBA8gBAPgBAcICBxAjGLADGCfCAgoQABhHGNYEGLADwgIKEAAYigUYsAMYQ8ICDBAAGIoFGLADGAoYQ8ICDhAAGOQCGNYEGLAD2AEBwgIQEC4YigUYyAMYsAMYQ9gBAsICBxAjGIoFGCfCAgsQLhiABBjHARivAcICChAAGIoFGLEDGEPCAgcQABiKBRhDwgIHEC4YigUYQ8ICChAAGIAEGBQYhwLCAgUQABiABMICChAAGIAEGLEDGArCAgcQABiABBgKwgIGEAAYFhgewgIIEAAYFhgeGArCAggQABiKBRiGA8ICBhAAGB4YDcICChAAGAgYHhgNGArCAggQABgIGB4YDcICCBAAGAUYHhgN4gMEGAAgQYgGAZAGEboGBggBEAEYCboGBggCEAEYCA&sclient=gws-wiz-serp) from IR-based paper
 
-### Week Summary
+### Week 1 Summary
 Hours Total: 10
 
 ## Week 2
@@ -71,5 +71,16 @@ Hours Total: 10
 * *0.5 hour* Learning how paraphrasers train & write-up
 * *2 hours* Implementing basic watermarking technique on GPT-2
 
-### Week Summary
+### Week 2 Summary
+Hours Total: 10.5
+
+## Week 3
+
+### Oct 2 2023
+* *0.5 hour* Agenda for meeting/progress summary
+
+### Oct 3 2023
+* *0.5 hour* Progress Meeting
+
+### Week 3 Summary
 Hours Total: Ongoing

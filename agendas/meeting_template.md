@@ -14,6 +14,10 @@
 
 - THINGS TO DISCUSS AND TIMEBOXED
 
+### Progress
+
+- Things that have be done
+
 ### Questions
 
 - Questions to remember [for me]
