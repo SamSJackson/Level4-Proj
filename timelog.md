@@ -83,5 +83,9 @@ Hours Total: 10.5
 ### Oct 3 2023
 * *0.5 hour* Progress Meeting
 
+### Oct 5 2023
+* *2 hour* God himself could not have solved this problem (implementing soft/hard watermarking)
+* *1 hour* PDF creation to allow visual from GPT generation (dnf regretfully)
+
 ### Week 3 Summary
 Hours Total: Ongoing

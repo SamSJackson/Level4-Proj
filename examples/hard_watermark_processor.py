@@ -77,4 +77,3 @@ class HardWatermarkLogitsProcessor(HardWatermarkBase, LogitsProcessor):
         green_tokens_mask = self._calc_greenlist_mask(scores=scores, greenlist_token_ids=batched_greenlist_ids)
         scores = self._bias_greenlist_logits(scores, green_tokens_mask, self.delta)
         return scores
-    
