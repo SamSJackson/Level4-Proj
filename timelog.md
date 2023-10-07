@@ -87,5 +87,9 @@ Hours Total: 10.5
 * *2 hour* God himself could not have solved this problem (implementing soft/hard watermarking)
 * *1 hour* PDF creation to allow visual from GPT generation (dnf regretfully)
 
+### Oct 7 2023
+* *1 hour* Implement detection method
+* *1 hour* Implement argparse run version
+
 ### Week 3 Summary
 Hours Total: Ongoing
