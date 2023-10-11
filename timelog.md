@@ -92,4 +92,16 @@ Hours Total: 10.5
 * *1 hour* Implement argparse run version
 
 ### Week 3 Summary
+Hours Total: 7 hours
+
+
+## Week 4
+
+### Oct 11 2023
+* *1.5 hours* Hunt for news article dataset
+* *1.5 hours* Prepare news article dataset
+
+* *2 hours* Decide number of 
+
+### Week 4 Summary
 Hours Total: Ongoing
