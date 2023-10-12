@@ -38,7 +38,6 @@ class Generator:
                  gamma: float = None,
                  delta: float = None,
                  is_watermark: bool = True,
-                 max_new_tokens: int = 200,
                  *args) -> str:
         self._set_attributes(gamma, delta)
 
@@ -48,10 +47,10 @@ class Generator:
         if is_watermark:
             output_tokens = self.model.generate(**tokenized_input,
                                                 max_new_tokens=200,
-                                                num_beams=1,
                                                 do_sample=True,
                                                 no_repeat_ngram_size=2,
                                                 repetition_penalty=1.5,
+                                                pad_token_id=self.tokenizer.eos_token_id,
                                                 logits_processor=LogitsProcessorList([self.watermark_processor])
                                                 )
         else:
@@ -60,10 +59,11 @@ class Generator:
                                                 do_sample=True,
                                                 no_repeat_ngram_size=2,
                                                 repetition_penalty=1.5,
+                                                pad_token_id=self.tokenizer.eos_token_id,
                                                 )
 
         output_tokens = output_tokens[:, tokenized_input["input_ids"].shape[-1]:]
-        output_text = self.tokenizer.batch_decode(output_tokens, skip_special_tokens=True)
+        output_text = self.tokenizer.batch_decode(output_tokens, skip_special_tokens=True)[0] # Returns as list[str]
         return output_text
 
     def _set_attributes(self, gamma: float = None, delta: float = None):

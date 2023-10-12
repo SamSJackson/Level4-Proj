@@ -11,8 +11,9 @@ __pycache__/
 */20news-bydate-train/
 */wikitext-103/
 */signalmedia-1m/
-/data/prepared/
-/data/raw/
+data/prepared/
+data/raw/
+
 
 # Distribution / packaging
 .Python

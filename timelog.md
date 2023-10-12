@@ -104,6 +104,7 @@ Hours Total: 7 hours
 ### Oct 12 2023
 
 * *2 hours* Creating automated generation class/method 
+* *1 hour* Generation test to generate some basic evaluation data
 
 ### Week 4 Summary
 Hours Total: Ongoing
