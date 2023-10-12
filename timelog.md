@@ -101,7 +101,9 @@ Hours Total: 7 hours
 * *1.5 hours* Hunt for news article dataset
 * *1.5 hours* Prepare news article dataset
 
-* *2 hours* Decide number of 
+### Oct 12 2023
+
+* *2 hours* Creating automated generation class/method 
 
 ### Week 4 Summary
 Hours Total: Ongoing
