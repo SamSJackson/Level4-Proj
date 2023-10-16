@@ -1,7 +1,7 @@
-# Meeting : DATE
+# Meeting : 17/10/2023
 
-* Time: TIME
-* Location: PLACE
+* Time: 14:00-14:30
+* Location: SAWB 331
 ----------
 
 * Project: Watermarking in Machine-Generated Text
@@ -12,7 +12,10 @@
 
 ### Agenda
 
-- THINGS TO DISCUSS AND TIMEBOXED
+- Questions [5-10mins]
+- How to prepare code/goal for releasing code [5mins]
+- Preparation for writing dissertation [5mins]
+- Plan for upcoming weeks [5mins]
 
 ### Progress
 
@@ -24,10 +27,22 @@
     - 31 documents, with sampling, took 2m 42seconds
     - 5.2 seconds per doc; assuming linear increase: 1h 26mins for 1000 documents
 - Probably useful to have these stats amongst my diss.
+- Created Generator class which allows document generation with adaptable model - fully adaptable outside required prompt changes.
+- Adaptable watermarking class 
 
 ### Questions
 
-- Questions to remember [for me]
+- In the case of paraphrasing with beam search:
+  - Will paraphasing twice have similar results to picking the second most likely option in beam search?
+
+#### Research Questions
+- Does recursive paraphrasing evade the Stanford-Distortion watermarking method?
+- Is the degradation of text perplexity linear through paraphrasing?
+- Impact of short-context paraphraser vs long-context paraphraser?
+- Feasibility of use in academic context?
+- Is there a reasonable "minimum" text length for watermarking/paraphrasing? 
+- Impact of watermarking given different generation methods (greedy vs beam vs sampling)
+- NO NEW RESEARCH QUESTIONS THIS WEEK!
 
 ### Meeting Minutes
 
@@ -39,6 +54,6 @@
 
 ### Next Meeting Goals
 
-- Things to do for next meeting
+- I need to research potential paraphrasing models - this has not been done yet.
 
 

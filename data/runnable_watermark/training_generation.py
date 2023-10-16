@@ -5,7 +5,7 @@ import pandas as pd
 from Generator import Generator
 
 training_path = "../prepared/train/training_untokenized.csv"
-p = 0.003 / 100
+p = 0.0005 / 100
 
 # Reads in approximately one percent of all values - only taking row when random number < p
 df = pd.read_csv(training_path, header=0, skiprows=lambda i: i > 0 and random.random() > p)
@@ -15,7 +15,7 @@ print(f"Documents: {no_documents}")
 
 sampled_into_df = df.copy()
 
-model_name = "gpt2"
+model_name = "stabilityai/StableBeluga-7B"
 attempt_cuda = True
 generator = Generator(model_name, attempt_cuda=attempt_cuda)
 
@@ -35,7 +35,7 @@ for group in tqdm.tqdm(groups_of_df):
 sampled_into_df["watermarked"] = watermarked_sampled_answers
 sampled_into_df["non-watermarked"] = normal_sampled_answers
 
-sampled_into_df.to_csv(f"../processed/train/example_{p*100}_{no_documents}_cuda_{attempt_cuda}.csv")
+sampled_into_df.to_csv(f"../processed/train/example_model_{model_name}_no_documents_{no_documents}_cuda_{attempt_cuda}.csv")
 
 
 
