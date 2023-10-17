@@ -20,7 +20,7 @@ class Generator:
 
         try:
             self.tokenizer = AutoTokenizer.from_pretrained(tokenizer_name)
-        except  OSError as os_error:
+        except OSError as os_error:
             raise Exception(f"{tokenizer_name} is not a valid model identifier or file location")
 
         self.device = 'cuda' if (attempt_cuda and

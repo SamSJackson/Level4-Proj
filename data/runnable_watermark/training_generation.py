@@ -5,28 +5,32 @@ import pandas as pd
 from Generator import Generator
 
 training_path = "../prepared/train/training_untokenized.csv"
-p = 0.0005 / 100
+sample_size = 100
+no_of_documents = 792112
+skip = sorted(random.sample(range(1, no_of_documents+1), no_of_documents-sample_size))
 
-# Reads in approximately one percent of all values - only taking row when random number < p
-df = pd.read_csv(training_path, header=0, skiprows=lambda i: i > 0 and random.random() > p)
+df = pd.read_csv(training_path, header=0, skiprows=skip)
 
-no_documents = df.shape[0]
-print(f"Documents: {no_documents}")
+print(f"Documents: {sample_size}")
 
 sampled_into_df = df.copy()
 
-model_name = "stabilityai/StableBeluga-7B"
+model_name = "gpt2"
 attempt_cuda = True
 generator = Generator(model_name, attempt_cuda=attempt_cuda)
 
-no_groups = 5
-groups_of_df = np.array_split(df['content-to-sample'], no_groups)
+no_groups = 10
+groups_of_df = np.split(df['content-to-sample'], no_groups)
+gamma_values = [0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.50, 0.55, 0.6, 0.65]
 watermarked_sampled_answers = []
 normal_sampled_answers = []
 
-for group in tqdm.tqdm(groups_of_df):
+delta_fixed = 5
+for i in tqdm.tqdm(range(len(groups_of_df))):
+    gamma = gamma_values[i]
+    group = groups_of_df[i]
     for prompt in group:
-        content = generator.generate(prompt, gamma=0.2, delta=5)
+        content = generator.generate(prompt, gamma=gamma, delta=delta_fixed)
         non_watermarked = generator.generate(prompt, is_watermark=False)
 
         watermarked_sampled_answers.append(content)
@@ -35,7 +39,7 @@ for group in tqdm.tqdm(groups_of_df):
 sampled_into_df["watermarked"] = watermarked_sampled_answers
 sampled_into_df["non-watermarked"] = normal_sampled_answers
 
-sampled_into_df.to_csv(f"../processed/train/example_model_{model_name}_no_documents_{no_documents}_cuda_{attempt_cuda}.csv")
+sampled_into_df.to_csv(f"../processed/train/model_{model_name}_{sample_size}_delta_{delta_fixed}_cuda_{attempt_cuda}.csv")
 
 
 

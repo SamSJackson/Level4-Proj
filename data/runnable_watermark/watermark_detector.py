@@ -143,8 +143,8 @@ class WatermarkDetector(WatermarkBase):
         for normalizer in self.normalizers:
             text = normalizer(text)
         if len(self.normalizers) > 0:
-            print(f"Text after normalization:\n\n{text}\n")
-
+            # print(f"Text after normalization:\n\n{text}\n")
+            pass
         if tokenized_text is None:
             assert self.tokenizer is not None, (
                 "Watermark detection on raw string ",
