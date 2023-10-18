@@ -50,10 +50,14 @@
 
 ### Summary
 
-- Summary of meeting
+- Beam search second option likely to be better than paraphrasing twice.
+- Writing sounds good
+- Code is checked to understand the project - make sure it is navigable.
+  - Make sure to have it such that code reproducable
 
 ### Next Meeting Goals
 
 - I need to research potential paraphrasing models - this has not been done yet.
+- 
 
 

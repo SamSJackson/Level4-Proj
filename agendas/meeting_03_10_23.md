@@ -39,17 +39,35 @@
 - Feasibility of use in academic context?
 - Is there a reasonable "minimum" text length for watermarking/paraphrasing? 
 - Impact of watermarking given different generation methods (greedy vs beam vs sampling)
+- Universal watermark - consequence of watermark
 
 ### Meeting Minutes
 
-- Notes throughout session
+- Same vocabulary required for generation and detection 
+  - Differing vocabularies can have impact on results
+- Perhaps streamlit app/implementation of watermark pdf display.
+- Types of prompts - should be completion-based as opposed to Q/A
+- Perhaps look into document dataset
+- Implement my own version of the watermark
+- Can just do surface-level improvement of watermark
+- The idea of paraphrasing 
+  - If so good at paraphrasing then you would just use the paraphrase model as generative model
+  - Small paraphraser vs large paraphrasers. Lightweight paraphraser vs heavyweight.
+  - Direct paraphrasers may not be directly useful but it is most-likely fine-tuned off of a less paraphrasing model
 
+- Use smaller model (distil vs gpt2-large) at first, save time.
+
+- Treated as a binary classification problem 
+  - Can I use z-score to distinguish between watermarked and not-watermarked
+- Perhaps try and reproduce some results
+
+- NO MEETING NEXT WEEK 
 ### Summary
 
 - Summary of meeting
 
 ### Next Meeting Goals
 
-- Things to do for next meeting
+- 
 
 
