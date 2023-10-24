@@ -2,10 +2,11 @@ import random, tqdm
 import numpy as np
 import pandas as pd
 
-from Generator import Generator
+from data.code.user_api.Generator import Generator
+import os
 
-training_path = "../prepared/train/training_untokenized.csv"
-sample_size = 100
+training_path = "../../prepared/train/training_untokenized.csv"
+sample_size = 10
 no_of_documents = 792112
 skip = sorted(random.sample(range(1, no_of_documents+1), no_of_documents-sample_size))
 
@@ -39,7 +40,8 @@ for i in tqdm.tqdm(range(len(groups_of_df))):
 sampled_into_df["watermarked"] = watermarked_sampled_answers
 sampled_into_df["non-watermarked"] = normal_sampled_answers
 
-sampled_into_df.to_csv(f"../processed/train/model_{model_name}_{sample_size}_delta_{delta_fixed}_cuda_{attempt_cuda}.csv")
+sampled_into_df.to_csv(
+    f"../processed/train/model_{model_name.replace('/', '-')}_{sample_size}_delta_{delta_fixed}_cuda_{attempt_cuda}.csv")
 
 
 

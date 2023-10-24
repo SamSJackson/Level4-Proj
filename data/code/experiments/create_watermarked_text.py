@@ -1,6 +1,6 @@
 import torch
 from transformers import GPT2Tokenizer, GPT2LMHeadModel, LogitsProcessorList
-from data.runnable_watermark.watermark_generator import WatermarkLogitsProcessor
+from data.code.implementation.watermark_generator import WatermarkLogitsProcessor
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 

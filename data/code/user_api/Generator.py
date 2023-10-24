@@ -1,5 +1,5 @@
 from transformers import AutoModelForCausalLM, AutoTokenizer, LogitsProcessorList
-from watermark_generator import WatermarkLogitsProcessor
+from data.code.implementation.watermark_generator import WatermarkLogitsProcessor
 import torch
 
 

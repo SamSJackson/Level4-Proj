@@ -1,7 +1,7 @@
 import torch
 from transformers import LogitsProcessor
 
-from watermark_base import WatermarkBase
+from data.code.implementation.watermark_base import WatermarkBase
 
 
 class WatermarkLogitsProcessor(WatermarkBase, LogitsProcessor):

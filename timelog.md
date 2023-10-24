@@ -107,4 +107,32 @@ Hours Total: 7 hours
 * *1 hour* Generation test to generate some basic evaluation data
 
 ### Week 4 Summary
-Hours Total: Ongoing
+Hours Total: 6 hours
+
+## Week 5
+
+### Oct 17 2023
+* *0.5 hour* Send agenda email for Jake
+* *0.5 hour* Research question on recursive paraphrasing against second beam
+
+### Oct 18 2023
+* *0.5 hours* Meeting with Jake
+* *1 hour* Uploading meeting notes and organising plan for this week
+
+### Oct 19 2023
+* *1 hour* Examples of dissertations and inspiration
+* *1 hour* Mindmapping introduction
+* *0.5 hours* Changing huggingface env. variables
+* *2 hour* Mindmapping evaluation methodology
+* *1 hour* Investigating potential paraphrasing models & implementable watermark methods
+
+### Week 5 Summary
+Hours Total: 8 hours
+
+## Week 6
+
+### 23 Oct 2023
+* *0.5 hours* Send agenda email for Jake
+
+### 24 Oct 2023
+* *0.5 hours* Meeting with Jake

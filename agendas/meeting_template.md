@@ -16,7 +16,7 @@
 
 ### Progress
 
-- Things that have be done
+- Things that have been done
 
 ### Questions
 

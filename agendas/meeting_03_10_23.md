@@ -1,4 +1,4 @@
-# Meeting : DATE
+# Meeting : 03/10/23
 
 * Time: 15:00-15:30
 * Location: SAWB 331
@@ -64,10 +64,16 @@
 - NO MEETING NEXT WEEK 
 ### Summary
 
-- Summary of meeting
+- No meeting next week - next meeting is 17/10/23
+- Different types of paraphrasing models is important for this purpose.
+- Important to consider how prompt is provided to model - this impacts generation.
+- PDF display would be cool.
+- Write my own class extension for watermark model.
+- Same vocabulary/tokenizer used for model generation is required to detection.
 
-### Next Meeting Goals
-
-- 
+### Next Meeting Goals | Two weeks to complete this
+- Implement watermark model which is adaptable.
+- Implement generation method
+- Find dataset to generate data from - just prompts required.
 
 

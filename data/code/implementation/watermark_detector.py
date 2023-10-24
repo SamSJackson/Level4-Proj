@@ -4,7 +4,7 @@ from scipy.stats import norm
 
 from tokenizers import Tokenizer
 
-from normalizers import normalization_strategy_lookup
+from data.code.static.normalizers import normalization_strategy_lookup
 from nltk.util import ngrams
 
 from watermark_base import WatermarkBase

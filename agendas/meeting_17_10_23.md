@@ -46,18 +46,20 @@
 
 ### Meeting Minutes
 
-- Notes throughout session
-
-### Summary
-
 - Beam search second option likely to be better than paraphrasing twice.
 - Writing sounds good
 - Code is checked to understand the project - make sure it is navigable.
   - Make sure to have it such that code reproducable
 
+### Summary
+
+- Writing methodology before testing/evaluation can be useful to recognise questions that I might have.
+- Make sure code allows reproduction of data in report.
+- Beam search second option is not the same as paraphrasing twice.
+
 ### Next Meeting Goals
 
 - I need to research potential paraphrasing models - this has not been done yet.
-- 
-
+- Make some evaluation graphics and data flow - allowing "reproducable" results.
+- Look into a start on writing the dissertation motivation/methodology/introduction.
 
