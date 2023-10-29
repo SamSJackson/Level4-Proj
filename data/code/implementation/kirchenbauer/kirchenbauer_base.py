@@ -1,6 +1,6 @@
 import torch
 
-class WatermarkBase:
+class KirchenbauerBase():
     def __init__(
         self,
         vocab: list[int] = None,
@@ -8,6 +8,7 @@ class WatermarkBase:
         delta: float = 2.0,
         seeding_scheme: str = "simple_1",
         hash_key: int = 15485863,
+        *args,
     ):
         self.vocab = vocab
         self.vocab_size = len(vocab)

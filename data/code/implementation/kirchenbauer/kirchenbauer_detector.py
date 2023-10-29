@@ -7,10 +7,10 @@ from tokenizers import Tokenizer
 from data.code.static.normalizers import normalization_strategy_lookup
 from nltk.util import ngrams
 
-from watermark_base import WatermarkBase
+from data.code.implementation.kirchenbauer.kirchenbauer_base import KirchenbauerBase
 
 
-class WatermarkDetector(WatermarkBase):
+class KirchenbauerDetector(KirchenbauerBase):
     def __init__(
             self,
             *args,

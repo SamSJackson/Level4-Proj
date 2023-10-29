@@ -1,10 +1,10 @@
 import torch
 from transformers import LogitsProcessor
 
-from data.code.implementation.watermark_base import WatermarkBase
+from data.code.implementation.kirchenbauer.kirchenbauer_base import KirchenbauerBase
 
 
-class WatermarkLogitsProcessor(WatermarkBase, LogitsProcessor):
+class KirchenbauerLogitsProcessor(KirchenbauerBase, LogitsProcessor):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -16,7 +16,8 @@ class WatermarkLogitsProcessor(WatermarkBase, LogitsProcessor):
         final_mask = green_tokens_mask.bool()
         return final_mask
 
-    def _bias_greenlist_logits(self, scores: torch.Tensor, greenlist_mask: torch.Tensor, greenlist_bias: float) -> torch.Tensor:
+    def _bias_greenlist_logits(self, scores: torch.Tensor, greenlist_mask: torch.Tensor,
+                               greenlist_bias: float) -> torch.Tensor:
         scores[greenlist_mask] = scores[greenlist_mask] + greenlist_bias
         scores = torch.nn.functional.softmax(scores)
         return scores
@@ -38,3 +39,9 @@ class WatermarkLogitsProcessor(WatermarkBase, LogitsProcessor):
         green_tokens_mask = self._calc_greenlist_mask(scores=scores, greenlist_token_ids=batched_greenlist_ids)
         scores = self._bias_greenlist_logits(scores, green_tokens_mask, greenlist_bias=self.delta)
         return scores
+
+    def set_attributes(self, gamma: float = None, delta: float = None):
+        if gamma:
+            self.set_gamma(gamma)
+        if delta:
+            self.set_delta(delta)

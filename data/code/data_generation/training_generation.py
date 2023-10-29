@@ -18,7 +18,7 @@ sampled_into_df = df.copy()
 
 model_name = "gpt2"
 attempt_cuda = True
-generator = Generator(model_name, attempt_cuda=attempt_cuda)
+generator = Generator(model_name, watermark_name="kirchenbauer", attempt_cuda=attempt_cuda)
 
 no_groups = 10
 groups_of_df = np.split(df['content-to-sample'], no_groups)

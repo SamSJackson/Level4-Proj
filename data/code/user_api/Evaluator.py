@@ -1,5 +1,5 @@
 from transformers import AutoTokenizer
-from data.code.implementation.watermark_detector import WatermarkDetector
+from data.code.implementation.kirchenbauer.kirchenbauer_detector import WatermarkDetector
 import torch
 
 

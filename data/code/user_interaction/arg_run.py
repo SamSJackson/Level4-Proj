@@ -1,8 +1,8 @@
 import argparse
 import torch
 from transformers import GPT2Tokenizer, GPT2LMHeadModel, LogitsProcessorList
-from data.code.implementation.watermark_base import WatermarkLogitsProcessor
-from data.code.implementation.watermark_detector import WatermarkDetector
+from data.code.implementation.kirchenbauer.kirchenbauer_base import WatermarkLogitsProcessor
+from data.code.implementation.kirchenbauer.kirchenbauer_detector import WatermarkDetector
 
 '''
 - Prompt

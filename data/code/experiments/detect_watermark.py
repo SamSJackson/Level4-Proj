@@ -1,6 +1,6 @@
 import torch
 from transformers import GPT2Tokenizer, GPT2LMHeadModel
-from data.code.implementation.watermark_detector import WatermarkDetector
+from data.code.implementation.kirchenbauer.kirchenbauer_detector import WatermarkDetector
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
