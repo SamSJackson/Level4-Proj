@@ -1,12 +1,11 @@
 import random, tqdm
-import numpy as np
 import pandas as pd
 
 from data.code.user_api.Generator import Generator
-import os
 
 training_path = "../../prepared/train/training_untokenized.csv"
-sample_size = 10
+
+sample_size = 50
 no_of_documents = 792112
 skip = sorted(random.sample(range(1, no_of_documents+1), no_of_documents-sample_size))
 
@@ -16,33 +15,37 @@ print(f"Documents: {sample_size}")
 
 sampled_into_df = df.copy()
 
+z_threshold = 4.0
 model_name = "gpt2"
 attempt_cuda = True
-generator = Generator(model_name, watermark_name="kirchenbauer", attempt_cuda=attempt_cuda)
+kgw_generator = Generator(model_name, watermark_name="kirchenbauer", attempt_cuda=attempt_cuda, z_threshold=z_threshold)
+kthl_generator = Generator(model_name, watermark_name="stanford", attempt_cuda=attempt_cuda, z_threshold=z_threshold)
 
-no_groups = 10
-groups_of_df = np.split(df['content-to-sample'], no_groups)
-gamma_values = [0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.50, 0.55, 0.6, 0.65]
-watermarked_sampled_answers = []
-normal_sampled_answers = []
+kgw_sampled_answers = []
+kthl_sampled_answers = []
+unwatermarked_sampled_answers = []
 
-delta_fixed = 5
-for i in tqdm.tqdm(range(len(groups_of_df))):
-    gamma = gamma_values[i]
-    group = groups_of_df[i]
-    for prompt in group:
-        content = generator.generate(prompt, gamma=gamma, delta=delta_fixed)
-        non_watermarked = generator.generate(prompt, is_watermark=False)
+gamma = 0.5
+delta = 2.0
 
-        watermarked_sampled_answers.append(content)
-        normal_sampled_answers.append(non_watermarked)
+prompts = df['content-to-sample']
 
-sampled_into_df["kgw-watermarked"] = watermarked_sampled_answers
-sampled_into_df["kthl-watermarked"] = []
-sampled_into_df["non-watermarked"] = normal_sampled_answers
+for prompt in tqdm.tqdm(prompts):
+    kgw_content = kgw_generator.generate(prompt, gamma=gamma, delta=delta)
+    kthl_content = kthl_generator.generate(prompt)
+    unwatermarked = kgw_generator.generate(prompt, is_watermark=False) # Content generator does not matter when no watermark
 
-sampled_into_df.to_csv(
-    f"../processed/train/model_{model_name.replace('/', '-')}_{sample_size}_delta_{delta_fixed}_cuda_{attempt_cuda}.csv")
+    kgw_sampled_answers.append(kgw_content)
+    kthl_sampled_answers.append(kthl_content)
+    unwatermarked_sampled_answers.append(unwatermarked)
+
+
+sampled_into_df["kgw-watermarked"] = kgw_sampled_answers
+sampled_into_df["kthl-watermarked"] = kthl_sampled_answers
+sampled_into_df["non-watermarked"] = unwatermarked_sampled_answers
+
+output_path = f"../../processed/train/model_{model_name.replace('/', '-')}_{sample_size}_delta_{delta}_cuda_{attempt_cuda}_kgw_kthl.csv"
+sampled_into_df.to_csv(output_path)
 
 
 

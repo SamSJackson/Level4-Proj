@@ -142,6 +142,7 @@ Hours Total: 8 hours
 * *2 hours* Generate method should allow adaptable watermarking
 * *3 hours* Detection method should allow adaptable detection techniques
 * *1 hour* Generating 100 samples of existing two watermarks 
+* *1 hour* Searching for potential paraphrasing models
 
 ### Week 6 Summary
-Hours Total: 8 hours
+Hours Total: 9 hours
