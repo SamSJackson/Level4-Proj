@@ -136,3 +136,12 @@ Hours Total: 8 hours
 
 ### 24 Oct 2023
 * *0.5 hours* Meeting with Jake
+
+### 29 Oct 2023
+* *1 hour* Implementing Stanford Watermark
+* *2 hours* Generate method should allow adaptable watermarking
+* *3 hours* Detection method should allow adaptable detection techniques
+* *1 hour* Generating 100 samples of existing two watermarks 
+
+### Week 6 Summary
+Hours Total: 8 hours
