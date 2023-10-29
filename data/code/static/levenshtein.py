@@ -2,7 +2,7 @@ import numpy as np
 from math import sqrt, log
 
 
-def levenshtein(x, y, gamma = 0.0):
+def levenshtein(x, y, gamma=0.0):
     n = len(x)
     m = len(y)
 

@@ -3,6 +3,7 @@ from transformers import LogitsProcessorList
 from data.code.implementation.BaseGenerator import BaseGenerator
 from data.code.implementation.kirchenbauer.kirchenbauer_logits import KirchenbauerLogitsProcessor
 
+
 class KirchenbauerProcessor(BaseGenerator):
 
     def __init__(self, *args, **kwargs):
@@ -33,5 +34,3 @@ class KirchenbauerProcessor(BaseGenerator):
                                             logits_processor=LogitsProcessorList([self.watermarker])
                                             )
         return output_tokens
-
-        return ""

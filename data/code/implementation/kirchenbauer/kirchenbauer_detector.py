@@ -8,9 +8,9 @@ from data.code.static.normalizers import normalization_strategy_lookup
 from nltk.util import ngrams
 
 from data.code.implementation.kirchenbauer.kirchenbauer_base import KirchenbauerBase
+from data.code.implementation.BaseDetector import BaseDetector
 
-
-class KirchenbauerDetector(KirchenbauerBase):
+class KirchenbauerDetector(KirchenbauerBase, BaseDetector):
     def __init__(
             self,
             *args,
@@ -63,6 +63,7 @@ class KirchenbauerDetector(KirchenbauerBase):
             return_green_token_mask: bool = False,
             return_z_score: bool = True,
             return_p_value: bool = True,
+            **kwargs
     ):
         if self.ignore_repeated_bigrams:
             # Method that only counts a green/red hit once per unique bigram.
@@ -134,6 +135,9 @@ class KirchenbauerDetector(KirchenbauerBase):
             z_threshold: float = None,
             **kwargs,
     ) -> dict:
+
+        self.delta = kwargs.get("delta", self.delta)
+        self.gamma = kwargs.get("gamma", self.gamma)
 
         assert (text is not None) ^ (tokenized_text is not None), "Must pass either the raw or tokenized string"
         if return_prediction:

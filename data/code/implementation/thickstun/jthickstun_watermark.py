@@ -9,7 +9,9 @@ class ThickstunProcessor(BaseGenerator):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def generate(self, prompt, seq_len: int = 0, no_tokens: int = 0, *args, **kwargs) -> str:
+    def generate(self, prompt, seq_len: int = 10, no_tokens: int = 0, *args, **kwargs) -> str:
+        seq_len = kwargs.get("seq_len", 10)
+
         rng = mersenne_rng(self.hash_key)
         xi = torch.tensor([rng.rand() for _ in range(seq_len * self.vocab_size)]).view(seq_len, self.vocab_size)
         shift = torch.randint(seq_len, (1,))

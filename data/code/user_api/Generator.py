@@ -39,10 +39,10 @@ class Generator(BaseGenerator):
             raise Exception(f"{tokenizer_name} is not a valid tokenizer identifier or file location")
 
         try:
-            assert watermark_name.lower() in WATERMARKS
+            assert watermark_name.lower() in WATERMARKS.keys()
             self.watermark_name = watermark_name.lower()
         except:
-            raise Exception(f"{watermark_name} is not a valid watermark\nPick from: {WATERMARKS}")
+            raise Exception(f"{watermark_name} is not a valid watermark\nPick from: {WATERMARKS.keys()}")
 
         self.device = 'cuda' if (attempt_cuda and
                                  torch.cuda.is_available()) else 'cpu'
@@ -70,7 +70,7 @@ class Generator(BaseGenerator):
         is_watermark = kwargs.get('is_watermark', False)
 
         if is_watermark:
-            output_tokens = self.watermarker.generate(tokenized_input, args, kwargs)
+            output_tokens = self.watermarker.generate(tokenized_input, *args, **kwargs)
         else:
             output_tokens = self.model.generate(**tokenized_input,
                                                 max_new_tokens=200,

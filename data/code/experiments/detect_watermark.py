@@ -1,23 +1,24 @@
-import torch
-from transformers import GPT2Tokenizer, GPT2LMHeadModel
-from data.code.implementation.kirchenbauer.kirchenbauer_detector import WatermarkDetector
+from data.code.user_api.Generator import Generator
+from data.code.user_api.Evaluator import Evaluator
 
-device = 'cuda' if torch.cuda.is_available() else 'cpu'
+input_text = "The surface of Mars is barren and dry, with what little water there is tied up in icecaps or perhaps existing below the surface. But if you look closely at the surface, " \
+            "you will see what looks like shorelines or canyons where massive "
 
-tokenizer = GPT2Tokenizer.from_pretrained('distilgpt2')
-model = GPT2LMHeadModel.from_pretrained('distilgpt2')
+watermark_name = "stanford"
+model_name = "gpt2"
+tokenizer_name = "gpt2"
+attempt_cuda = True
+generator = Generator(model_name=model_name, tokenizer_name=tokenizer_name,
+                      watermark_name=watermark_name,attempt_cuda=attempt_cuda)
 
-watermark_detector = WatermarkDetector(vocab=list(tokenizer.get_vocab().values()),
-                                        gamma=0.8, # should match original setting
-                                        seeding_scheme="simple_1", # should match original setting
-                                        device=model.device, # must match the original rng device type
-                                        tokenizer=tokenizer,
-                                        z_threshold=4.0,
-                                        ignore_repeated_bigrams=True
-                                       )
+evaluator = Evaluator(tokenizer_name=model_name, watermark_name=watermark_name,
+                      attempt_cuda=attempt_cuda)
 
-with open("outputs/results.txt") as f:
-    text = " ".join(f.readlines())
+gamma = 0.4
+delta = 20
 
-score_dict = watermark_detector.detect(text) # or any other text of interest to analyze
-print(score_dict)
+content = generator.generate(input_text, gamma=gamma, delta=delta)
+print(f"{input_text}-GENERATED CONTENT-{content}")
+
+detection = evaluator.detect(content, gamma=gamma, delta=delta)
+print(detection)

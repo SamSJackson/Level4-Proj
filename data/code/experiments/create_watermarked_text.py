@@ -6,7 +6,7 @@ input_text = "The surface of Mars is barren and dry, with what little water ther
 
 model_name = "gpt2"
 attempt_cuda = True
-generator = Generator(model_name="gpt2", watermark_name="stanford",
+generator = Generator(model_name="gpt2", is_watermark=False, watermark_name="kirchenbauer",
                       attempt_cuda=True)
 
 gamma = 0.4

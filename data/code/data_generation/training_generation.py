@@ -37,7 +37,8 @@ for i in tqdm.tqdm(range(len(groups_of_df))):
         watermarked_sampled_answers.append(content)
         normal_sampled_answers.append(non_watermarked)
 
-sampled_into_df["watermarked"] = watermarked_sampled_answers
+sampled_into_df["kgw-watermarked"] = watermarked_sampled_answers
+sampled_into_df["kthl-watermarked"] = []
 sampled_into_df["non-watermarked"] = normal_sampled_answers
 
 sampled_into_df.to_csv(
