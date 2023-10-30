@@ -45,7 +45,7 @@ sampled_into_df["kthl-watermarked"] = kthl_sampled_answers
 sampled_into_df["non-watermarked"] = unwatermarked_sampled_answers
 
 output_path = f"../../processed/train/model_{model_name.replace('/', '-')}_{sample_size}_delta_{delta}_cuda_{attempt_cuda}_kgw_kthl.csv"
-sampled_into_df.to_csv(output_path)
+sampled_into_df.to_csv(output_path, index=False)
 
 
 

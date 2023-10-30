@@ -20,6 +20,7 @@ class Evaluator:
                  ):
         self.seeding_scheme = seeding_scheme
         self.z_threshold = kwargs.get("z_threshold", 4.0)
+        kwargs.pop("z_threshold")
 
         try:
             self.tokenizer = AutoTokenizer.from_pretrained(tokenizer_name)

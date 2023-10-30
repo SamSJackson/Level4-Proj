@@ -1,40 +1,65 @@
 import tqdm
-import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 
 from data.code.user_api.Evaluator import Evaluator
 
+base_path = "../../processed/train/"
+data_path = base_path + "paraphrase_humarin_samples_50.csv"
 
-delta = 5
-cuda = True
-model = "gpt2"
-documents = 100
+df = pd.read_csv(data_path)
+df = df.dropna()
 
-evaluation_path = \
-    f"../processed/train/model_{model}_{documents}_delta_{delta}_cuda_{cuda}.csv"
-gamma_values = [0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.50, 0.55, 0.6, 0.65]
+kthl_watermarked = df["kthl-watermarked"]
+kthl_pp_first = df["pp-kthl-first"]
 
-tokenizer_name = model
-df = pd.read_csv(evaluation_path)
+kgw_watermarked = df["kgw-watermarked"]
+kgw_pp_first = df["pp-kgw-first"]
 
-evaluator = Evaluator(
-    tokenizer_name
-)
+z_threshold = 4.0
+model_name = "gpt2"
+attempt_cuda = True
+kgw_evaluator = Evaluator(tokenizer_name="gpt2", watermark_name="kirchenbauer", attempt_cuda=attempt_cuda, z_threshold=z_threshold)
+kthl_evaluator = Evaluator(tokenizer_name="gpt2",watermark_name="stanford", attempt_cuda=attempt_cuda, z_threshold=z_threshold)
 
-no_groups = 10
-groups_of_df = np.split(df['watermarked'], no_groups)
-all_results = []
+gamma = 0.5
+delta = 2.0
 
-for i in tqdm.tqdm(range(len(groups_of_df))):
-    gamma = gamma_values[i]
-    group = groups_of_df[i]
-    for text in group:
-        results = evaluator.detect(text, delta=delta, gamma=gamma)
-        all_results.append(results)
+kgw_wm_zscore = []
+kgw_pp_zscore = []
 
-z_scores = [result['z_score'] for result in all_results]
-idx = list(range(len(z_scores)))
-plt.plot(idx, z_scores, marker='o', linestyle='None')
-plt.show()
+kthl_wm_zscore = []
+kthl_pp_zscore = []
+
+for wm_text in tqdm.tqdm(kthl_watermarked):
+    results = kthl_evaluator.detect(wm_text)
+    kthl_wm_zscore.append(results["z_score"])
+
+for wm_text in tqdm.tqdm(kthl_pp_first):
+    results = kthl_evaluator.detect(wm_text)
+    kthl_pp_zscore.append(results["z_score"])
+
+for wm_text in tqdm.tqdm(kgw_watermarked):
+    results = kgw_evaluator.detect(wm_text, gamma=gamma, delta=delta)
+    kgw_wm_zscore.append(results["z_score"])
+
+for wm_text in tqdm.tqdm(kgw_pp_first):
+    results = kgw_evaluator.detect(wm_text, gamma=gamma, delta=delta)
+    kgw_pp_zscore.append(results["z_score"])
+
+df["kgw-wm-zscore"] = kgw_wm_zscore
+df["kgw-wm-pp-zscore"] = kgw_pp_zscore
+
+df["kthl-wm-zscore"] = kthl_wm_zscore
+df["kthl-wm-pp-zscore"] = kthl_pp_zscore
+
+
+output_path = base_path + f"paraphrase_humarin_samples_50_EVALUATED.csv"
+df.to_csv(output_path, index=False)
+
+
+
+
+
+
+
 
