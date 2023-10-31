@@ -41,7 +41,13 @@
 
 ### Summary
 
-- Summary of meeting
+- Perhaps email author for code.
+- So sentence-based paraphrasing models.
+- Is sliding window realistic as this project - no, perhaps another project.
+- Keep the same sample documents for each watermark.
+- Hard to compare z-scores.
+- The z-score might be comparable but not always.
+- Perhaps RoC curve is useful.
 
 ### Next Meeting Goals
 
