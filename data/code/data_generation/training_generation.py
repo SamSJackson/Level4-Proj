@@ -77,5 +77,5 @@ sampled_into_df["kgw-watermarked"] = kgw_sampled_answers
 sampled_into_df["kthl-watermarked"] = kthl_sampled_answers
 sampled_into_df["non-watermarked"] = unwatermarked_sampled_answers
 
-output_path = f"../../processed/train/model_{model_name.replace('/', '-')}_{sample_size}_delta_{delta}_kgw_kthl.csv"
+output_path = f"../../processed/train/wmarked/model_{model_name.replace('/', '-')}_{sample_size}_delta_{delta}_kgw_kthl.csv"
 sampled_into_df.to_csv(output_path, index=False)

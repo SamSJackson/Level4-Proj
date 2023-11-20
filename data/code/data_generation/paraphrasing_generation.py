@@ -42,7 +42,7 @@ device = "cpu"
 tokenizer = AutoTokenizer.from_pretrained("humarin/chatgpt_paraphraser_on_T5_base")
 
 model = AutoModelForSeq2SeqLM.from_pretrained("humarin/chatgpt_paraphraser_on_T5_base").to(device)
-base_path = "../../processed/train/"
+base_path = "../../processed/train/wmarked/"
 file_location = base_path + f"model_gpt2_289_delta_10.0_kgw_kthl.csv"
 
 df = pd.read_csv(file_location)
@@ -64,7 +64,7 @@ for text in tqdm.tqdm(kgw_watermarked):
 df["pp-kgw-first"] = first_kgw_paraphrase
 df["pp-kthl-first"] = first_kthl_paraphrase
 
-output_path = base_path + f"paraphrase_humarin_samples_{len(kgw_watermarked)}_20_11_23.csv"
+output_path = base_path + f"paraphrased/paraphrase_humarin_samples_{len(kgw_watermarked)}_20_11_23.csv"
 df.to_csv(output_path, index=False)
 
 

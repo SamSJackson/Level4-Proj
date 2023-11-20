@@ -5,7 +5,7 @@ from transformers import AutoTokenizer
 from data.code.implementation.newkirch.extended_watermark_processor import WatermarkDetector
 from data.code.implementation.newthickstun.thickstun_detect import permutation_test
 
-base_path = "../../processed/train/"
+base_path = "../../processed/train/paraphrased"
 data_path = base_path + "paraphrase_humarin_samples_289_20_11_23.csv"
 
 df = pd.read_csv(data_path)
@@ -66,7 +66,7 @@ df["kgw-wm-pp-pscore"] = kgw_pp_pscore
 df["kthl-wm-pscore"] = kthl_wm_pscore
 df["kthl-wm-pp-pscore"] = kthl_pp_pscore
 
-output_path = base_path + f"paraphrase_humarin_samples_{len(kgw_wm_pscore)}_EVALUATED_19_11_23.csv"
+output_path = base_path + f"evaluated/paraphrase_humarin_samples_{len(kgw_wm_pscore)}_EVALUATED_19_11_23.csv"
 df.to_csv(output_path, index=False)
 
 
