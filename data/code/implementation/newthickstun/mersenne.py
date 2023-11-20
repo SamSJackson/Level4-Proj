@@ -1,4 +1,3 @@
-# Stolen from jthickstun: https://github.com/jthickstun/watermark/blob/main/mersenne.py
 # Modified from: https://github.com/james727/MTP
 
 class mersenne_rng(object):
@@ -55,11 +54,3 @@ class mersenne_rng(object):
             p[i], p[j] = p[j], p[i]
 
         return p
-
-if __name__ == "__main__":
-    rng = mersenne_rng(10)
-    for i in range(1000000):
-        rng.rand()
-
-    for i in range(10):
-        print(rng.rand())

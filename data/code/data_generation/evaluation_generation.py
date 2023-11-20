@@ -1,10 +1,12 @@
 import tqdm
 import pandas as pd
 
-from data.code.user_api.Evaluator import Evaluator
+from transformers import AutoTokenizer
+from data.code.implementation.newkirch.extended_watermark_processor import WatermarkDetector
+from data.code.implementation.newthickstun.thickstun_detect import permutation_test
 
 base_path = "../../processed/train/"
-data_path = base_path + "paraphrase_humarin_samples_50.csv"
+data_path = base_path + "paraphrase_humarin_samples_289_20_11_23.csv"
 
 df = pd.read_csv(data_path)
 df = df.dropna()
@@ -18,42 +20,53 @@ kgw_pp_first = df["pp-kgw-first"]
 z_threshold = 4.0
 model_name = "gpt2"
 attempt_cuda = True
-kgw_evaluator = Evaluator(tokenizer_name="gpt2", watermark_name="kirchenbauer", attempt_cuda=attempt_cuda, z_threshold=z_threshold)
-kthl_evaluator = Evaluator(tokenizer_name="gpt2",watermark_name="stanford", attempt_cuda=attempt_cuda, z_threshold=z_threshold)
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+gamma = 0.25
+delta = 10.0
 
-gamma = 0.5
-delta = 2.0
+kgw_detector = WatermarkDetector(vocab=list(tokenizer.get_vocab().values()),
+                                 gamma=gamma,
+                                 seeding_scheme="simple_1",
+                                 device="cpu",
+                                 tokenizer=tokenizer,
+                                 z_threshold=4.0,
+                                 normalizers=[],
+                                 ignore_repeated_ngrams=True)
 
-kgw_wm_zscore = []
-kgw_pp_zscore = []
+kgw_wm_pscore = []
+kgw_pp_pscore = []
 
-kthl_wm_zscore = []
-kthl_pp_zscore = []
+kthl_wm_pscore = []
+kthl_pp_pscore = []
+
+kthl_n = 256
+kthl_key = 42
 
 for wm_text in tqdm.tqdm(kthl_watermarked):
-    results = kthl_evaluator.detect(wm_text)
-    kthl_wm_zscore.append(results["z_score"])
+    tokenized = tokenizer.encode(wm_text, return_tensors='pt', truncation=True, max_length=2048).numpy()[0]
+    p_val = permutation_test(tokenized, kthl_key, kthl_n, len(tokenized), len(tokenizer), n_runs=5)
+    kthl_wm_pscore.append(p_val)
 
 for wm_text in tqdm.tqdm(kthl_pp_first):
-    results = kthl_evaluator.detect(wm_text)
-    kthl_pp_zscore.append(results["z_score"])
+    tokenized = tokenizer.encode(wm_text, return_tensors='pt', truncation=True, max_length=2048).numpy()[0]
+    p_val = permutation_test(tokenized, kthl_key, kthl_n, len(tokenized), len(tokenizer), n_runs=5)
+    kthl_pp_pscore.append(p_val)
 
 for wm_text in tqdm.tqdm(kgw_watermarked):
-    results = kgw_evaluator.detect(wm_text, gamma=gamma, delta=delta)
-    kgw_wm_zscore.append(results["z_score"])
+    score_dict = kgw_detector.detect(wm_text)
+    kgw_wm_pscore.append(score_dict["p_value"])
 
 for wm_text in tqdm.tqdm(kgw_pp_first):
-    results = kgw_evaluator.detect(wm_text, gamma=gamma, delta=delta)
-    kgw_pp_zscore.append(results["z_score"])
+    score_dict = kgw_detector.detect(wm_text)
+    kgw_pp_pscore.append(score_dict["p_value"])
 
-df["kgw-wm-zscore"] = kgw_wm_zscore
-df["kgw-wm-pp-zscore"] = kgw_pp_zscore
+df["kgw-wm-pscore"] = kgw_wm_pscore
+df["kgw-wm-pp-pscore"] = kgw_pp_pscore
 
-df["kthl-wm-zscore"] = kthl_wm_zscore
-df["kthl-wm-pp-zscore"] = kthl_pp_zscore
+df["kthl-wm-pscore"] = kthl_wm_pscore
+df["kthl-wm-pp-pscore"] = kthl_pp_pscore
 
-
-output_path = base_path + f"paraphrase_humarin_samples_50_EVALUATED.csv"
+output_path = base_path + f"paraphrase_humarin_samples_{len(kgw_wm_pscore)}_EVALUATED_19_11_23.csv"
 df.to_csv(output_path, index=False)
 
 
