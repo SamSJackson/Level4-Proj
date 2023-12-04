@@ -1,12 +1,17 @@
 import tqdm
 import pandas as pd
 
+import torch
+from datetime import datetime
 from transformers import AutoTokenizer
 from data.code.implementation.newkirch.extended_watermark_processor import WatermarkDetector
 from data.code.implementation.newthickstun.thickstun_detect import permutation_test
 
+date = datetime.now().strftime("%d_%m_%Y")
 base_path = "../../processed/train/"
-data_path = base_path + "paraphrased/paraphrase_humarin_samples_62_27_11_23.csv"
+data_path = base_path + "paraphrased/paraphrase_humarin_samples_282_04_12_23.csv"
+
+
 
 df = pd.read_csv(data_path)
 df = df.dropna()
@@ -23,11 +28,12 @@ attempt_cuda = True
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 gamma = 0.25
 delta = 10.0
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 kgw_detector = WatermarkDetector(vocab=list(tokenizer.get_vocab().values()),
                                  gamma=gamma,
                                  seeding_scheme="simple_1",
-                                 device="cpu",
+                                 device=device,
                                  tokenizer=tokenizer,
                                  z_threshold=4.0,
                                  normalizers=[],
@@ -40,7 +46,7 @@ kthl_key = 42
 #     tokenized = tokenizer.encode(wm_text, return_tensors='pt', truncation=True, max_length=2048).numpy()[0]
 #     p_val = permutation_test(tokenized, kthl_key, kthl_n, len(tokenized), len(tokenizer), n_runs=5)
 #     kthl_wm_pscore.append(p_val)
-#
+
 # for wm_text in tqdm.tqdm(kthl_pp_first):
 #     tokenized = tokenizer.encode(wm_text, return_tensors='pt', truncation=True, max_length=2048).numpy()[0]
 #     p_val = permutation_test(tokenized, kthl_key, kthl_n, len(tokenized), len(tokenizer), n_runs=5)
@@ -63,7 +69,7 @@ for i in range(1, 4):
     df[f"kgw-wm-pp-zscore-{i}"] = paraphrase_scores(kgw_pp)
     df[f"non-wm-pp-zscore-{i}"] = paraphrase_scores(non_pp)
 
-output_path = base_path + f"evaluated/paraphrase_humarin_samples_{len(kgw_pp)}_EVALUATED_27_11_23.csv"
+output_path = base_path + f"evaluated/paraphrase_humarin_samples_{len(kgw_pp)}_EVALUATED_{date}.csv"
 df.to_csv(output_path, index=False)
 
 

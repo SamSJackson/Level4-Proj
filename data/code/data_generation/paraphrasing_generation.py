@@ -1,8 +1,12 @@
+import torch.cuda
 import tqdm
 import pandas as pd
 
+from datetime import datetime
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+date = datetime.now().strftime("%d_%m_%Y")
 def paraphrase(
         text,
         model,
@@ -20,7 +24,7 @@ def paraphrase(
         return_tensors="pt", padding="longest",
         max_length=max_length,
         truncation=True,
-    ).to("cpu").input_ids
+    ).to(device).input_ids
 
     outputs = model.generate(
         input_ids,
@@ -34,16 +38,13 @@ def paraphrase(
     )
 
     res = tokenizer.batch_decode(outputs, skip_special_tokens=True)
-
     return res
-
-device = "cpu"
 
 tokenizer = AutoTokenizer.from_pretrained("humarin/chatgpt_paraphraser_on_T5_base")
 
 model = AutoModelForSeq2SeqLM.from_pretrained("humarin/chatgpt_paraphraser_on_T5_base").to(device)
 base_path = "../../processed/train/"
-file_location = base_path + f"wmarked/model_gpt2_100_delta_10.0_kgw_kthl.csv"
+file_location = base_path + f"wmarked/model_gpt2_282_delta_5.0_04_12_2023.csv"
 
 df = pd.read_csv(file_location)
 
@@ -76,7 +77,7 @@ for i in range(3):
     non_watermarked = nwmarked_paraphrased.copy()
     kthl_watermarked = kthl_paraphrase.copy()
 
-output_path = base_path + f"paraphrased/paraphrase_humarin_samples_{len(kgw_watermarked)}_27_11_23.csv"
+output_path = base_path + f"paraphrased/paraphrase_humarin_samples_{len(kgw_watermarked)}_{date}.csv"
 df.to_csv(output_path, index=False)
 
 
