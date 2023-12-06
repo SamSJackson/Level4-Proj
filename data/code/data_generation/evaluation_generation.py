@@ -9,9 +9,7 @@ from data.code.implementation.newthickstun.thickstun_detect import permutation_t
 
 date = datetime.now().strftime("%d_%m_%Y")
 base_path = "../../processed/train/"
-data_path = base_path + "paraphrased/paraphrase_humarin_samples_282_04_12_23.csv"
-
-
+data_path = base_path + "cleaned_paraphrased/cleaned_paraphrase_humarin_samples_llama-2-7b_230_05_12_2023.csv"
 
 df = pd.read_csv(data_path)
 df = df.dropna()
@@ -23,7 +21,7 @@ kgw_watermarked = df["kgw-watermarked"]
 non_watermarked = df["non-watermarked"]
 
 z_threshold = 4.0
-model_name = "gpt2"
+model_name = "TheBloke/Llama-2-7B-GPTQ"
 attempt_cuda = True
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 gamma = 0.25
@@ -69,7 +67,7 @@ for i in range(1, 4):
     df[f"kgw-wm-pp-zscore-{i}"] = paraphrase_scores(kgw_pp)
     df[f"non-wm-pp-zscore-{i}"] = paraphrase_scores(non_pp)
 
-output_path = base_path + f"evaluated/paraphrase_humarin_samples_{len(kgw_pp)}_EVALUATED_{date}.csv"
+output_path = base_path + f"evaluated/paraphrase_humarin_samples_llama-2-7b_{len(kgw_pp)}_EVALUATED_{date}.csv"
 df.to_csv(output_path, index=False)
 
 
