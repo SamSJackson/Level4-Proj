@@ -32,15 +32,17 @@ def preprocess_bart(tokenizer_x, row):
     return {
         "input_ids": input_ids["input_ids"].squeeze(),
         "attention_mask": input_ids["attention_mask"].squeeze(),
-        "target_ids": target_ids["input_ids"].squeeze(),
+        "decoder_input_ids": target_ids["input_ids"].squeeze(),
+        "labels": target_ids["input_ids"].squeeze(),
+        "decoder_attention_mask": target_ids["attention_mask"].squeeze()
     }
 
-def compute_metrics(metrics_dict, eval_pred):
+metric = evaluate.load("accuracy")
+def compute_metrics(eval_pred):
     logits, labels = eval_pred
     predictions = np.argmax(logits, axis=-1)
-    return {m_name: m.compute(predictions=predictions, references=labels)[m_name] for (m_name, m) in metrics_dict.items()}
+    return metric.compute(predictions=predictions, references=labels)
 
-metrics = {"accuracy": evaluate.load("accuracy")}
 device = "cuda:0" if torch.cuda.is_available() else "cpu"
 train_path = "../../prepared/train/par3/two_trans_train_untokenized.csv"
 valid_path = "../../prepared/validation/par3/two_trans_validation_untokenized.csv"
@@ -49,9 +51,9 @@ model_name = "facebook/bart-large"
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 model = AutoModelForSeq2SeqLM.from_pretrained(model_name).to(device)
 
-training_args = TrainingArguments(report_to=None,
+training_args = TrainingArguments(report_to="none",
                                   output_dir="practice/",
-                                  evaluation_strategy="epoch",
+                                  evaluation_strategy="no",
                                   learning_rate=1e-5,
                                   num_train_epochs=2,
                                   auto_find_batch_size=True,
@@ -75,15 +77,15 @@ train_dataset = Dataset.from_pandas(train_df.sample(100)).map(lambda x: preproce
 eval_dataset = Dataset.from_pandas(eval_df.sample(20)).map(lambda x: preprocess_bart(tokenizer, x))
 
 
-# trainer = Trainer(
-#     model=model,
-#     args=training_args,
-#     train_dataset=train_dataset,
-#     eval_dataset=eval_dataset,
-#     compute_metrics=lambda x: compute_metrics(metrics, x)
-# )
-#
-# trainer.train()
-# print("Finished training")
-# trainer.save_model(f"saved/scratch/")
-# print("Finished saving")
+trainer = Trainer(
+    model=model,
+    args=training_args,
+    train_dataset=train_dataset,
+    eval_dataset=eval_dataset,
+    compute_metrics=compute_metrics
+)
+
+trainer.train()
+print("Finished training")
+trainer.save_model(f"saved/scratch/")
+print("Finished saving")
