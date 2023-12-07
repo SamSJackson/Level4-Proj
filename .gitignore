@@ -11,6 +11,7 @@ __pycache__/
 */20news-bydate-train/
 */wikitext-103/
 */signalmedia-1m/
+*/model_finetuning/finished_models*
 data/prepared/
 data/raw/
 
