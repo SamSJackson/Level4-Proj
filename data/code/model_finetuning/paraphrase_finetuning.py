@@ -12,11 +12,11 @@ from transformers import (
 date = datetime.now().strftime("%d_%m_%Y")
 
 device = "cuda:0" if torch.cuda.is_available() else "cpu"
-train_path = "../../prepared/train/par3-dipper-small/train_combined_sents_1.csv"
-valid_path = "../../prepared/validation/par3-dipper-small/validation_combined_sents_1.csv"
+train_path = "../../prepared/train/par3-dipper-25_000/train_combined_sents_1.csv"
+valid_path = "../../prepared/validation/par3-dipper-25_000/validation_combined_sents_1.csv"
 
 # model_name = "facebook/bart-large"
-model_name = "google/t5-efficient-xl"
+model_name = "google/t5-efficient-large-nl32"
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 print("Loaded tokenizer")
 
@@ -65,36 +65,14 @@ def compute_metrics(eval_pred):
 training_args = Seq2SeqTrainingArguments(report_to="none",
                                          output_dir="practice/",
                                          evaluation_strategy="no",# Set to epoch after compute_metrics problem fixed.
-                                         learning_rate=1e-5,
+                                         learning_rate=1e-4,
                                          gradient_checkpointing=True,
-                                         fp16=True,
+                                         bf16=True,
                                          num_train_epochs=2,
                                          auto_find_batch_size=True,
                                          generation_num_beams=2,
                                          generation_max_length=200,
                                          save_strategy="epoch")
-
-# train_df = pd.read_csv(train_path)
-# eval_df = pd.read_csv(valid_path)
-# train_df = train_df.sample(frac=1).reset_index(drop=True)
-# eval_df = eval_df.sample(frac=1).reset_index(drop=True)
-#
-# train_df = train_df.rename(
-#     columns={'translation_1': 'input_text', "translation_2": "target_text"}
-# )
-#
-# eval_df = eval_df.rename(
-#     columns={'translation_1': 'input_text', "translation_2": "target_text"}
-# )
-
-# train_dataset = Dataset.from_pandas(train_df).map(
-#     preprocess_function,
-#     batched=False,
-# )
-# eval_dataset = Dataset.from_pandas(eval_df).map(
-#     preprocess_function,
-#     batched=False,
-# )
 
 train_dataset = load_dataset('csv', data_files=train_path)['train'].map(
     preprocess_function,
@@ -118,5 +96,5 @@ trainer = Seq2SeqTrainer(
 trainer.train()
 print("Finished training")
 model_path = model_name.replace("/", "-")
-trainer.save_model(f"saved/{model_path}-finetuned")
+trainer.save_model(f"saved/{model_path}-15_000-finetuned")
 print("Finished saving")
