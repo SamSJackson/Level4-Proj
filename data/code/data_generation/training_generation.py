@@ -1,9 +1,9 @@
 import random, tqdm
-import pandas as pd
+import pandas as pd, numpy as np
 from datetime import datetime
 
 import torch.cuda
-from transformers import AutoTokenizer, AutoModelForCausalLM, LogitsProcessorList
+from transformers import AutoTokenizer, AutoModelForCausalLM, AutoConfig, LogitsProcessorList
 from data.code.implementation.newkirch.extended_watermark_processor import WatermarkLogitsProcessor
 from data.code.implementation.newthickstun.thickstun_generate import generate_shift
 
@@ -14,34 +14,35 @@ def decode_text(tokenizer, tokens, input_tokens):
     output_text = tokenizer.batch_decode(output_tokens, skip_special_tokens=True)[0]
     return output_text
 
+dataframe_size = 559374 # Dataframe Size
+number_of_documents = 250
+random_rows = set(np.random.randint(low=1, high=dataframe_size, size=number_of_documents))
+skip_numbers = list(set(range(dataframe_size)) - random_rows)
+skip_numbers.remove(0)
+df = pd.read_csv(training_path, header=0, skiprows=skip_numbers)
+
 date = datetime.now().strftime("%d_%m_%Y")
-# sample_size = 200
-# no_of_documents = 9233104
-# skip = sorted(random.sample(range(1, no_of_documents+1), no_of_documents-sample_size))
-
-df = pd.read_csv(training_path, header=0, skiprows=lambda x: x > 0 and random.random() > 0.0005)
-
-sample_size = df.shape[0]
-print(f"Documents: {sample_size}")
+print(f"Documents: {number_of_documents}")
 
 sampled_into_df = df.copy()
 
 z_threshold = 4.0
-model_name = "gpt2"
-attempt_cuda = True
+model_name = "TheBloke/Llama-2-7B-GPTQ"
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 gamma = 0.25
 delta = 5.0
 
 tokenizer = AutoTokenizer.from_pretrained(model_name)
-model = AutoModelForCausalLM.from_pretrained(model_name)
-model.to(device)
-kgw_watermark_processor = WatermarkLogitsProcessor(vocab=list(tokenizer.get_vocab().values()),
-                                                   gamma=gamma,
-                                                   delta=delta,
-                                                   seeding_scheme="simple_1")
+config = AutoConfig.from_pretrained(model_name)
+config.quantization_config["disable_exllama"] = False
+config.quantization_config["exllama_config"] = {"version": 2}
 
+model = AutoModelForCausalLM.from_pretrained(model_name, device_map="cuda:0", config=config)
+
+kgw_watermark_processor = WatermarkLogitsProcessor(vocab=list(tokenizer.get_vocab().values()),
+                                                   gamma=gamma, delta=delta,
+                                                   seeding_scheme="simple_1")
 
 kgw_sampled_answers = []
 kthl_sampled_answers = []
@@ -85,5 +86,5 @@ sampled_into_df["kgw-watermarked"] = kgw_sampled_answers
 sampled_into_df["kthl-watermarked"] = kthl_sampled_answers
 sampled_into_df["non-watermarked"] = unwatermarked_sampled_answers
 
-output_path = f"../../processed/train/wmarked/model_{model_name.replace('/', '-')}_{sample_size}_delta_{delta}_{date}.csv"
+output_path = f"../../processed/train/wmarked/model_{model_name.replace('/', '-')}_{number_of_documents}_delta_{delta}_{date}.csv"
 sampled_into_df.to_csv(output_path, index=False)

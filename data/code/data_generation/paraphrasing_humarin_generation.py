@@ -43,7 +43,7 @@ def paraphrase(
 tokenizer = AutoTokenizer.from_pretrained("humarin/chatgpt_paraphraser_on_T5_base")
 model = AutoModelForSeq2SeqLM.from_pretrained("humarin/chatgpt_paraphraser_on_T5_base").to(device)
 base_path = "../../processed/train/"
-file_location = base_path + f"wmarked/model_TheBloke-Llama-2-7B-GPTQ_250_delta_5.0_05_12_2023.csv"
+file_location = base_path + f"wmarked/model_TheBloke-Llama-2-7b-GPTQ_750_delta_5.0_15_12_2023.csv"
 
 df = pd.read_csv(file_location)
 
@@ -78,6 +78,8 @@ for i in range(3):
 
 output_path = base_path + f"paraphrased/paraphrase_humarin_samples_llama-2-7b_{len(kgw_watermarked)}_{date}.csv"
 df.to_csv(output_path, index=False)
+
+print("Finished paraphrasing")
 
 
 
