@@ -1,90 +1,108 @@
-import random, tqdm
+import tqdm, os
 import pandas as pd, numpy as np
 from datetime import datetime
 
 import torch.cuda
 from transformers import AutoTokenizer, AutoModelForCausalLM, AutoConfig, LogitsProcessorList
 from data.code.implementation.newkirch.extended_watermark_processor import WatermarkLogitsProcessor
-from data.code.implementation.newthickstun.thickstun_generate import generate_shift
 
-training_path = "../../prepared/train/training_untokenized.csv"
+training_path = "../../prepared/train/daigt/daigt_prompts.csv"
+access_token = os.environ['HF_ACCESS_TOKEN']
 
 def decode_text(tokenizer, tokens, input_tokens):
     output_tokens = tokens[:, input_tokens["input_ids"].shape[-1]:]
     output_text = tokenizer.batch_decode(output_tokens, skip_special_tokens=True)[0]
     return output_text
 
-dataframe_size = 559374 # Dataframe Size
-number_of_documents = 250
+# dataframe_size = 559374 # Dataframe Size - SignalMedia Dataset
+dataframe_size = 2421 # DAIGT dataset
+number_of_documents = 50
 random_rows = set(np.random.randint(low=1, high=dataframe_size, size=number_of_documents))
 skip_numbers = list(set(range(dataframe_size)) - random_rows)
-skip_numbers.remove(0)
+
+if 0 in skip_numbers:
+    skip_numbers.remove(0)
 df = pd.read_csv(training_path, header=0, skiprows=skip_numbers)
+print(df.columns)
 
 date = datetime.now().strftime("%d_%m_%Y")
 print(f"Documents: {number_of_documents}")
 
-sampled_into_df = df.copy()
-
 z_threshold = 4.0
-model_name = "TheBloke/Llama-2-7B-GPTQ"
+model_name = "mistralai/Mistral-7B-Instruct-v0.2"
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-gamma = 0.25
 delta = 5.0
+gamma = 0.25
+clean_model_name = model_name.replace('/', '-').replace('.', '_')
+output_path = f"../../processed/train/wmarked/model_{clean_model_name}_{number_of_documents}_delta_{int(delta)}_{date}.csv"
+print(f"Output Path: {output_path}")
 
-tokenizer = AutoTokenizer.from_pretrained(model_name)
-config = AutoConfig.from_pretrained(model_name)
-config.quantization_config["disable_exllama"] = False
-config.quantization_config["exllama_config"] = {"version": 2}
-
-model = AutoModelForCausalLM.from_pretrained(model_name, device_map="cuda:0", config=config)
+tokenizer = AutoTokenizer.from_pretrained(model_name, token=access_token)
+config = AutoConfig.from_pretrained(model_name, token=access_token)
+# Necessary for GPTQ models
+# config.quantization_config["disable_exllama"] = False
+# config.quantization_config["exllama_config"] = {"version": 2}
+model = AutoModelForCausalLM.from_pretrained(model_name,
+                                             device_map=device,
+                                             token=access_token,
+                                             torch_dtype=torch.bfloat16,
+                                             config=config)
 
 kgw_watermark_processor = WatermarkLogitsProcessor(vocab=list(tokenizer.get_vocab().values()),
                                                    gamma=gamma, delta=delta,
                                                    seeding_scheme="simple_1")
-
 kgw_sampled_answers = []
-kthl_sampled_answers = []
 unwatermarked_sampled_answers = []
 
-kthl_m = 80
-kthl_n = 256
-kthl_key = 42
+tasks = df["instructions"]
 
-prompts = sampled_into_df['content-to-sample']
+def generate_essay(model_inputs, logitslist=None):
+    # Setting `pad_token_id` to `eos_token_id` for open-ended generation.
 
-for prompt in tqdm.tqdm(prompts):
-    tokenized_input = tokenizer(prompt, return_tensors='pt').to(device)
-    kgw_tokens = model.generate(**tokenized_input,
-                                max_new_tokens=200,
-                                do_sample=True,
-                                min_length=10,
-                                no_repeat_ngram_size=2,
-                                repetition_penalty=1.5,
-                                logits_processor=LogitsProcessorList([kgw_watermark_processor]),
-                                pad_token_id=tokenizer.eos_token_id)
-    kgw_output_text = decode_text(tokenizer, kgw_tokens, tokenized_input)
+    # Multinomial Sampling
+    if logitslist != None:
+        generated_ids = model.generate(
+            model_inputs,
+            max_new_tokens=7500,
+            do_sample=True,
+            pad_token_id=tokenizer.eos_token_id,
+            logits_processor=logitslist
+        )
+    else:
+        generated_ids = model.generate(
+            model_inputs,
+            max_new_tokens=7500,
+            do_sample=True,
+            pad_token_id=tokenizer.eos_token_id,
+        )
+
+    decoded = tokenizer.batch_decode(generated_ids, skip_special_tokens=True)
+    text = decoded[0].split("[/INST]")[1]
+    return text
+
+for chosen_task in tqdm.tqdm(tasks):
+    prompt = f'''You are a student working on the following assignment.
+
+    Write an essay based on the following task in no more than a 100 words.
+    {chosen_task}
+    '''
+    messages = [{
+        "role": "user",
+        "content": prompt
+    }]
+
+    model_inputs = tokenizer.apply_chat_template(messages, return_tensors="pt").to(device)
+
+    kgw_output_text = generate_essay(model_inputs, LogitsProcessorList([kgw_watermark_processor]))
     kgw_sampled_answers.append(kgw_output_text)
 
-    kthl_tokens = generate_shift(model, tokenized_input["input_ids"], len(tokenizer), kthl_n, kthl_m, kthl_key)[0]
-    kthl_text = tokenizer.decode(kthl_tokens, skip_special_tokens=True)
-
-    kthl_sampled_answers.append(kthl_text)
-
-    nwmark_tokens = model.generate(**tokenized_input,
-                                   max_new_tokens=200,
-                                   do_sample=True,
-                                   min_length=10,
-                                   no_repeat_ngram_size=2,
-                                   repetition_penalty=1.5,
-                                   pad_token_id=tokenizer.eos_token_id)
-    nwmark_output_text = decode_text(tokenizer, nwmark_tokens, tokenized_input)
+    nwmark_output_text = generate_essay(model_inputs)
     unwatermarked_sampled_answers.append(nwmark_output_text)
 
-sampled_into_df["kgw-watermarked"] = kgw_sampled_answers
-sampled_into_df["kthl-watermarked"] = kthl_sampled_answers
-sampled_into_df["non-watermarked"] = unwatermarked_sampled_answers
+df["kgw-watermarked"] = kgw_sampled_answers
+df["non-watermarked"] = unwatermarked_sampled_answers
 
-output_path = f"../../processed/train/wmarked/model_{model_name.replace('/', '-')}_{number_of_documents}_delta_{delta}_{date}.csv"
-sampled_into_df.to_csv(output_path, index=False)
+df.to_csv(output_path, index=False)
+
+print("Finished generating documents")

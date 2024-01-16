@@ -96,5 +96,5 @@ trainer = Seq2SeqTrainer(
 trainer.train()
 print("Finished training")
 model_path = model_name.replace("/", "-")
-trainer.save_model(f"saved/{model_path}-15_000-finetuned")
+trainer.save_model(f"saved/{model_path}-25_000-finetuned")
 print("Finished saving")

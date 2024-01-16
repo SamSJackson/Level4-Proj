@@ -19,8 +19,9 @@ def paraphrase(
         no_repeat_ngram_size=2,
         max_length=128
 ):
+    prompt = "paraphrase: "
     input_ids = tokenizer(
-        f'paraphrase: {text}',
+        f'{prompt} {text}',
         return_tensors="pt", padding="longest",
         max_length=max_length,
         truncation=True,

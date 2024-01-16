@@ -173,7 +173,6 @@ class WatermarkLogitsProcessor(WatermarkBase, LogitsProcessor):
 
     def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor) -> torch.FloatTensor:
         """Call with previous context as input_ids, and scores for next token."""
-
         # this is lazy to allow us to co-locate on the watermarked model's device
         self.rng = torch.Generator(device=input_ids.device) if self.rng is None else self.rng
 

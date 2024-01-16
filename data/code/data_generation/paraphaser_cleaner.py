@@ -5,9 +5,10 @@ from datetime import datetime
 date = datetime.now().strftime("%d_%m_%Y")
 
 base_path = "../../processed/train/"
-path = base_path + "/paraphrased/paraphrase_humarin_samples_llama-2-7b_251_05_12_2023.csv"
+path = base_path + "paraphrased/paraphrase_dipper_samples_mistralai_51_16_01_2024.csv"
 df = pd.read_csv(path)
 
+print(df)
 kgw_paraphased_column_names = [f"pp-kgw-{i}" for i in range(1,4)]
 nwm_paraphrased_column_names = [f"pp-unwatermarked-{i}" for i in range(1,4)]
 
@@ -25,5 +26,5 @@ mask = valid_rows % 2 == 0
 
 df = df[~mask]
 
-output_path = base_path + f"cleaned_paraphrased/cleaned_paraphrase_humarin_samples_llama-2-7b_{df.shape[0]}_{date}.csv"
+output_path = base_path + f"cleaned_paraphrased/cleaned_paraphrase_dipper_samples_mistralai_{df.shape[0]}_{date}.csv"
 df.to_csv(output_path, index=False)
