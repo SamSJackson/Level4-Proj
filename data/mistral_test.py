@@ -37,7 +37,7 @@ prompt = '''You are a student working on the following assignment.
 
 Create an essay based on the following topic in no more than a 100 words.
 
-Topic: Why are cats better than dogs? 
+Topic: What is the meaning of Scott Pilgrim vs. the World? 
 '''
 
 text = generate_essay(prompt)
