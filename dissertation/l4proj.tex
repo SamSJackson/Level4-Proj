@@ -31,7 +31,7 @@
 %==============================================================================
 %% ABSTRACT
 \begin{abstract}
-    Every abstract follows a similar pattern. Motivate; set aims; describe work; explain results.
+    \textbf{Every abstract follows a similar pattern. Motivate; set aims; describe work; explain results.}
     \vskip 0.5em
     Given the rise of LLMs and the growing power of malicious content-generation, 
     methods of identifying and authenticating machine-generated content has become a necessity. 
@@ -176,7 +176,7 @@ PROVIDE INTRO TO THIS BACKGROUND SECTION.
         From this stage, the tokens are used in a vectorization map which takes a token to a vector representation, granting a numerical structure. UNIQUENESS OF VECTORIZATION  
         
     \subsection{Probabilities \& Logits}
-        The probability of an event occurring is defined by a function $\rho: \Sigma \rightarrow [0,1]$, where $\Sigma$ is a sample space. While computers are most accurate between $[0,1]$, due to floating-point representation, it is often more useful to represent probabilities in the form the logits.
+        The probability of an event occurring is defined by a function $\rho: \Sigma \rightarrow [0,1]$, where $\Sigma$ is a sample space. While computers are most accurate between $[0,1]$, due to floating-point representation, it is often more useful to represent probabilities in the form of logits.
 
         \begin{definition}[Logits]
             Let $p$ be the probability of an event happening. The \textit{logit}, or log odds of the event occurring is defined as: 
@@ -186,7 +186,7 @@ PROVIDE INTRO TO THIS BACKGROUND SECTION.
             where logit is defined as $\text{logit}: (0,1) \rightarrow (-\infty, \infty)$.
         \end{definition}
         
-        Logits enable more effective linear modelling of data which may appear nonlinear in probability. ASK JAKE ABOUT LOGITS
+        The low probability values become negative under this method. This feature, alongside the wide range of values, provides simple interpretability. Hence, logits have become convention within the NLP sphere.
 
         PROVIDE IMAGE SHOWING PROBABILITY VS LOGITS SIDE-BY-SIDE.
 
@@ -248,6 +248,9 @@ PROVIDE INTRO TO THIS BACKGROUND SECTION.
             \item By definition, defeats watermarkings methods like whitespacing and homoglyphs. 
         \end{itemize}
     \subsection{DIPPER Paraphrase Model}
+        Paraphrasers tend to be Seq2Seq models, as the task is not too dissimilar to translation. In fact, many translators are trained on text which is twice-translated \citet{to french and back!}. Publicly available paraphrasers tend to be fine-tuned on sentence translations, leading to the sentence focus. Fortunately, there is one paper that generated their own paragraph-based paraphraser.
+
+        A paper which focused on a retrieval-based defense also brought forwards a technique to fine-tune a paragraph-based 
         \begin{itemize}
             \setlength\itemsep{0.5em}
             \item Reference DIPPER paper
@@ -255,42 +258,17 @@ PROVIDE INTRO TO THIS BACKGROUND SECTION.
             \item Paragraph context as opposed to sentence. 
         \end{itemize}
 
-\section{How does Maryland Watermark work?}
-    \subsection{Hard \& Soft Techniques}
+\section{Literature Survey}
+    \subsection{Maryland Watermark}
         \begin{itemize}
             \setlength\itemsep{0.5em}
             \item Reference Kirchenbauer paper
             \item Discuss hard watermark method 
             \item Intro to soft watermark method
         \end{itemize}
-    \subsection{Requirement Satisfactions}
-        \begin{itemize}
-            \setlength\itemsep{0.5em}
-            \item Does it satisfy robust - we prove that it is not.
-            \item Does it satisfy imperceptible
-            \item Does it satisfy agnostic 
-        \end{itemize}
-    \subsection{Vulnerabilities}
-        \begin{itemize}
-            \setlength\itemsep{0.5em}
-            \item Not robust and consequences. 
-            \item Prompt attacks 
-            \item Short document issues
-        \end{itemize}
-
-\section{HuggingFace Library}
-    \subsection{Open Source Nature}
-        \begin{itemize}
-            \setlength\itemsep{0.5em}
-            \item HuggingFace provides open-source platform to models.
-            \item Models can be used to alter generation method and permit research.
-        \end{itemize}
-    \subsection{Logits Processor}
-        \begin{itemize}
-            \setlength\itemsep{0.5em}
-            \item Library provides an abstract class which can be implemented for logits processing.
-            \item The class permits inference-stage manipulation of logits - allowing for watermarking
-        \end{itemize}
+    \subsection{Stanford Distortion Method}
+    \subsection{Inevitable Failure of Deep-Learning Detection Methods}
+    \subsection{Easy Watermarking Methods}
 
 % This is just for me to remember. Not staying like this.
 \section{Research Questions}
@@ -303,23 +281,71 @@ PROVIDE INTRO TO THIS BACKGROUND SECTION.
     
 %================================================================================================
 \chapter{Methods}
-What did you do to implement this idea, and what technical achievements did you make?
+\textbf{What did you do to implement this idea, and what technical achievements did you make?}
 
-To implement this idea, the followings tasks were completed:
-\begin{itemize}
-    \setlength\itemsep{0.5em}
-    \item Prepare the dataset for generation
-    \item Investigate optimal prompt generation
-    \item Generate watermarked text - with Maryland watermark.
-    \item Sentence-based paraphrase
-    \item Fine-tune smaller DIPPER model - based on same concepts as DIPPER paper.
-    \item Repeatedly paraphrase.
-    \item Evaluate with Z-Score, maintaining recommended threshold from Maryland. 
-\end{itemize}
+\section{Dataset}
+    \subsection{Source}
+        From Kaggle, ongoing competition, aiming to detect AI Generated Text \citep{llm-detect-ai-generated-text}. 
+    \subsection{Other possible datasets}
+        I chose to opt for a instruct model as opposed to an auto-generated method. The auto-generated method was experimented with, with a dataset from SignalMedia 1M Articles. 
+    \subsection{Information and Reliability}
+        The dataset is composed of four columns: \textbf{id}, \textbf{text}, \textbf{instructions}, \textbf{source\_text}.
+        The \textbf{text} column provides real essays, scraped from a separate Kaggle competition \cite{link feedback prize 3 kaggle}.
 
-\section{Guidance}
-You can't talk about everything. Cover the high level first, then cover important, relevant or impressive details.
+\section{Experimentation Approach}
+    \subsection{Flow Chart}
+        \begin{figure}[h]
+            \centering
+            \includegraphics[width=1\linewidth]{images/flow-charts/data-method-curved.pdf}
+            \caption{Flow Chart describing the process of generating the evaluation data.}
+            \label{fig:method-flow-chart} 
+        \end{figure}
 
+\section{Model Selection}
+    \subsection{Limitations and Availability}
+    \subsection{Prompt Generation}
+    
+\section{Implementation of Maryland Watermark}
+    The Maryland Watermark \citep{kirchenbauer2023watermark} made the code publicly available, which aided in customising the method for my purposes.
+
+    The implementation leverages the internals of HuggingFace and PyTorch. The figure \ref{fig:draw-this-figure} portrays the point at which changes are made. The post-training addition is a key selling point of the method, allowing for pre-existing models to adopt watermarking.
+
+    DISPLAY PROCESS FIGURE HERE. 
+
+    % Think about what else to discuss here. Perhaps the delta and gamma scores? I fix these in my work so maybe reference as to why.
+
+\section{Fine-tuning of a Paraphraser}
+    The DIPPER paper \citep{krishna2023paraphrasing} provided the dataset, which is a processed version of the Par3 dataset \citep{Par3_2022}. Whilst the fine-tuned model was similarly available, the computational cost was too great. Hence, I fine-tuned a lower-cost variation.
+
+    \subsection{Chosen Model}
+        Respecting the initial paper, T5 was the chosen Seq2Seq model architecture for the paraphrasing task. The pretrained model was designed to investigate the potential of transfer-learning, hence lending itself to paraphrasing comfortably. 
+
+        Within T5, numerous options are available. The paper, presented by \citet{tay2022scale}, provides analysis into efficient scaling as well as model checkpoints to be exploited. Amongst the efficient models, a DeepNarrow architecture is recommended to improve performance. This led to the decision to fine-tune the T5-Efficient-Large-NL32, where NL32 refers to the number of transformer blocks and Large refers to the approximately 1 billion parameters.
+
+    \subsection{Training Approach}
+        The initial paper fine-tuned their model on $\sim$6,000,000 paraphrase pairs, taking between 384 and 768 GPU hours \citep{krishna2023paraphrasing}. Incapable of replicating the same compute periods, the model I produced was fine-tuned on 50,000 paraphrase pairs, taking 6 GPU hours. % (Fine-tune another, aim for 100,000 paraphrase pairs). 
+        Further specifications into the training arguments are in the appendix. % Refer to appendix.
+
+        % Should probably actually do this
+        The dataset provided by DIPPER is split between Google translated and human translated. These sections are further split into nondescript subsections. In an effort to replicate the original paper to the fullest, both sections were sampled, taking a uniform distribution of documents from the respective subsections. 
+        The dataset used is now publicly available. % (Make it publicly available)
+        % (*) (Later 100,000 samples)
+        
+    \subsection{Flow Chart of Process}
+        Is this necessary? ASK JAKE 
+        
+\section{Generating Results} % Name this something better
+    The watermark can only be applied at inference stage, hence the data generation process required to begin with creating watermarked documents. 
+
+    \subsection{Watermarking Documents}
+        How did this process function? Provided a prompt, the chosen model would generate two essays, watermarked and unwatermarked. The generation was nucleus-sampling (should make it nucleus sampling) with $p = 0.8$ (give reasons for this?)
+
+    \subsection{Paraphrasing Documents}
+        This was a two pronged approach. Paraphrasing had to be completed many times, over many documents. Perhaps I could have used some distributed processing for this portion. 
+        I had to paraphrase with a sentence-based paraphraser as well as a paragraph-based.
+
+    \subsection{Evaluating Documents}
+        Respecting the initial threshold proposed by \citet{kirchenbauer2023watermark}, the Z-Score threshold was $z = 4.0$, based on the gamma and delta previously fixed ($\delta = 5.0, \gamma = 0.25$). 
 
 \section{General points}
 
