@@ -15,6 +15,7 @@ valid_directories = [
 
 
 train_dataset_dict = {"input_text": [], "target_text": []}
+print(train_directories)
 for file_path in tqdm.tqdm(train_directories):
     with open(file_path, encoding='utf8') as file:
         lines = file.readlines()
@@ -25,7 +26,7 @@ for file_path in tqdm.tqdm(train_directories):
 train_df = pd.DataFrame(train_dataset_dict)
 train_df = train_df.replace(to_replace='', value=np.nan).dropna()
 train_ds = Dataset.from_pandas(train_df)
-train_ds.to_csv("../prepared/train/par3-dipper-25_000/train_combined_sents_1.csv")
+# train_ds.to_csv("../prepared/train/par3-dipper-25_000/train_combined_sents_1.csv")
 
 train_ds = None
 train_dataset_dict = None
@@ -41,5 +42,7 @@ for file_path in tqdm.tqdm(valid_directories):
 
 valid_df = pd.DataFrame(valid_dataset_dict)
 valid_df = valid_df.replace(to_replace='None', value=np.nan).dropna()
+print(valid_df.shape)
 valid_ds = Dataset.from_pandas(valid_df)
-valid_ds.to_csv("../prepared/validation/par3-dipper-25_000/validation_combined_sents_1.csv")
+
+# valid_ds.to_csv("../prepared/validation/par3-dipper-25_000/validation_combined_sents_1.csv")

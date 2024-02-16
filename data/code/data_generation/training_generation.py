@@ -9,12 +9,6 @@ from data.code.implementation.newkirch.extended_watermark_processor import Water
 training_path = "../../prepared/train/daigt/daigt_prompts.csv"
 access_token = os.environ['HF_ACCESS_TOKEN']
 
-def decode_text(tokenizer, tokens, input_tokens):
-    output_tokens = tokens[:, input_tokens["input_ids"].shape[-1]:]
-    output_text = tokenizer.batch_decode(output_tokens, skip_special_tokens=True)[0]
-    return output_text
-
-# dataframe_size = 559374 # Dataframe Size - SignalMedia Dataset
 dataframe_size = 2421 # DAIGT dataset
 number_of_documents = 50
 random_rows = set(np.random.randint(low=1, high=dataframe_size, size=number_of_documents))

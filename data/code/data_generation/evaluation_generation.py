@@ -8,7 +8,7 @@ from data.code.implementation.newkirch.extended_watermark_processor import Water
 
 date = datetime.now().strftime("%d_%m_%Y")
 base_path = "../../processed/train/"
-data_path = base_path + "cleaned_paraphrased/cleaned_paraphrase_dipper_samples_mistralai_51_16_01_2024.csv"
+data_path = base_path + "cleaned_paraphrased/cleaned_paraphrase_replaced_adjectives_mistralai_51_16_02_2024.csv"
 
 df = pd.read_csv(data_path)
 df = df.dropna()
@@ -50,7 +50,7 @@ for i in range(1, 4):
     df[f"kgw-wm-pp-zscore-{i}"] = paraphrase_scores(kgw_pp)
     df[f"non-wm-pp-zscore-{i}"] = paraphrase_scores(non_pp)
 
-output_path = base_path + f"evaluated/paraphrase_dipper_samples_mistralai_{len(kgw_pp)}_EVALUATED_{date}.csv"
+output_path = base_path + f"evaluated/paraphrase_replaced_adjectives_mistralai_{len(kgw_pp)}_EVALUATED_{date}.csv"
 df.to_csv(output_path, index=False)
 
 

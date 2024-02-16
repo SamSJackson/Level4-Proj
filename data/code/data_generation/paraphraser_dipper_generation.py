@@ -37,6 +37,13 @@ def paraphrase(
         truncation=True,
     ).to(device).input_ids
 
+    # As recommended in DIPPER paper.
+    outputs = model.generate(
+        input_ids,
+        top_p=0.75,
+        do_sample=True,
+    )
+
     outputs = model.generate(
         input_ids,
         repetition_penalty=repetition_penalty,

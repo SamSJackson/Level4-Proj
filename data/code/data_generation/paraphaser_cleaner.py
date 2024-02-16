@@ -5,7 +5,7 @@ from datetime import datetime
 date = datetime.now().strftime("%d_%m_%Y")
 
 base_path = "../../processed/train/"
-path = base_path + "paraphrased/paraphrase_dipper_samples_mistralai_51_16_01_2024.csv"
+path = base_path + "paraphrased/replaced_adjectives_samples_mistralai_51_16_02_2024.csv"
 df = pd.read_csv(path)
 
 print(df)
@@ -26,5 +26,5 @@ mask = valid_rows % 2 == 0
 
 df = df[~mask]
 
-output_path = base_path + f"cleaned_paraphrased/cleaned_paraphrase_dipper_samples_mistralai_{df.shape[0]}_{date}.csv"
+output_path = base_path + f"cleaned_paraphrased/cleaned_paraphrase_replaced_adjectives_mistralai_{df.shape[0]}_{date}.csv"
 df.to_csv(output_path, index=False)

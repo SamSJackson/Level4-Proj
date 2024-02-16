@@ -146,3 +146,57 @@ Hours Total: 8 hours
 
 ### Week 6 Summary
 Hours Total: 9 hours
+
+# PROBABLY FILL THIS IN 
+
+## Week 7 30th Oct - 5th Nov
+
+### Week 7 Summary
+
+## Week 8 6th Nov - 12th Nov
+
+### Week 8 Summary 
+
+## Week 9 13th Nov - 19th Nov
+
+### Week 9 Summary
+
+## Week 10 20th Nov - 26th Nov
+
+### Week 10 Summary
+
+## Week 11 27th Nov - 3rd Dec
+
+### Week 11 Summary
+
+## Week 12 3rd Dec - 10th Dec
+
+
+### Week 12 Summary
+
+# Semester 2
+## Week 1 8th Jan - 14th Jan
+
+### Week 1 Summary
+
+## Week 2 15th Jan - 21st Jan
+
+### Week 2 Summary
+
+## Week 3 22nd Jan - 28th Jan
+
+### Week 3 Summary
+
+## Week 4 29th Jan - 4th Feb
+
+### Week 4 Summary
+
+## Week 5 5th Feb - 11th Feb
+
+### Week 5 Summary
+
+## Week 6 12th Feb - 18th Feb
+
+### Week 6 Summary
+
+
