@@ -12,10 +12,9 @@ from transformers import (
 date = datetime.now().strftime("%d_%m_%Y")
 
 device = "cuda:0" if torch.cuda.is_available() else "cpu"
-train_path = "../../prepared/train/par3-dipper-25_000/train_combined_sents_1.csv"
-valid_path = "../../prepared/validation/par3-dipper-25_000/validation_combined_sents_1.csv"
+train_path = "../../prepared/train/par3-dipper-100_000/train_sampled.csv"
+valid_path = "../../prepared/validation/par3-dipper-20_000/validation_sampled.csv"
 
-# model_name = "facebook/bart-large"
 model_name = "google/t5-efficient-large-nl32"
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 print("Loaded tokenizer")
@@ -78,8 +77,9 @@ train_dataset = load_dataset('csv', data_files=train_path)['train'].map(
     preprocess_function,
     batched=False
 )
-# The reason I choose train is because I separated the dataset and hf won't let me save a dataset with only
-# validation. Very annoying.
+
+# Claims 'train' but this is actually the validation dataset.
+# Could not save dataset with only validation.
 eval_dataset = load_dataset('csv', data_files=valid_path)['train'].map(
     preprocess_function,
     batched=False
@@ -96,5 +96,5 @@ trainer = Seq2SeqTrainer(
 trainer.train()
 print("Finished training")
 model_path = model_name.replace("/", "-")
-trainer.save_model(f"saved/{model_path}-25_000-finetuned")
+trainer.save_model(f"saved/{model_path}-finetuned")
 print("Finished saving")

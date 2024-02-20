@@ -2,8 +2,9 @@ import re, tqdm, os
 import pandas as pd, numpy as np
 from datasets import Dataset
 
-regex_train = re.compile('.*.sents_[1].train_ctrl_ctx*')
-regex_valid = re.compile('.*.sents_[1].valid_ctrl_ctx.tsv')
+regex_train = re.compile('.*.sents_.*.train_ctrl_no_ctx*')
+regex_valid = re.compile('.*.sents_.*.valid_ctrl_no_ctx.tsv')
+
 train_directories = [
     root + "/" + file for root, dirs, files in os.walk("../raw/dipper-par3/")
     for file in files if regex_train.match(root + "/" + file)
@@ -13,36 +14,29 @@ valid_directories = [
     for file in files if regex_valid.match(root + "/" + file)
 ]
 
+def make_dataset(directories, sample_amount):
+    dataset_dict = {"input_text": [], "target_text": []}
+    for file_path in tqdm.tqdm(directories):
+        with open(file_path, encoding='utf8') as f:
+            lines = f.readlines()
+            parsed_lines = np.random.choice([line.split('\t')[0] for line in lines if len(line.split('\t')) == 2], size=sample_amount)
+            dataset_dict["input_text"] = dataset_dict.get("input_text") + [p[0] for p in parsed_lines]
+            dataset_dict["target_text"] = dataset_dict.get("target_text") + [p[1] for p in parsed_lines]
+            lines = None
+    df = pd.DataFrame(dataset_dict)
+    df = df.replace(to_replace='', value=np.nan).dropna()
+    return Dataset.from_pandas(df)
 
-train_dataset_dict = {"input_text": [], "target_text": []}
-print(train_directories)
-for file_path in tqdm.tqdm(train_directories):
-    with open(file_path, encoding='utf8') as file:
-        lines = file.readlines()
-        train_dataset_dict["input_text"] = train_dataset_dict.get("input_text") + [line.split('\t')[0] for line in lines if len(line.split('\t')) == 2][:25_000]
-        train_dataset_dict["target_text"] = train_dataset_dict.get("target_text") + [line.split('\t')[1] for line in lines if len(line.split('\t')) == 2][:25_000]
-        lines = None
+aim = 100_000
+validation_fraction = 0.2
 
-train_df = pd.DataFrame(train_dataset_dict)
-train_df = train_df.replace(to_replace='', value=np.nan).dropna()
-train_ds = Dataset.from_pandas(train_df)
-# train_ds.to_csv("../prepared/train/par3-dipper-25_000/train_combined_sents_1.csv")
+train_sample_amount = int(np.ceil(aim / len(train_directories)))
+validation_sample_amount = int(train_sample_amount * validation_fraction)
 
-train_ds = None
-train_dataset_dict = None
+train_ds = make_dataset(train_directories, train_sample_amount)
+print(train_ds)
+train_ds.to_csv("../prepared/train/par3-dipper-100_000/train_sampled.csv")
 
-valid_dataset_dict = {"input_text": [], "target_text": []}
-
-for file_path in tqdm.tqdm(valid_directories):
-    with open(file_path, encoding='utf8') as file:
-        lines = file.readlines()
-        valid_dataset_dict["input_text"] = valid_dataset_dict.get("input_text") + [line.split('\t')[0] for line in lines if len(line.split('\t')) == 2][:3200]
-        valid_dataset_dict["target_text"] = valid_dataset_dict.get("target_text") + [line.split('\t')[1] for line in lines if len(line.split('\t')) == 2][:3200]
-        lines = None
-
-valid_df = pd.DataFrame(valid_dataset_dict)
-valid_df = valid_df.replace(to_replace='None', value=np.nan).dropna()
-print(valid_df.shape)
-valid_ds = Dataset.from_pandas(valid_df)
-
-# valid_ds.to_csv("../prepared/validation/par3-dipper-25_000/validation_combined_sents_1.csv")
+valid_ds = make_dataset(valid_directories, validation_sample_amount)
+print(valid_ds)
+valid_ds.to_csv("../prepared/validation/par3-dipper-20_000/validation_sampled.csv")

@@ -1,5 +1,6 @@
 import random, re, tqdm
 import pandas as pd
+import numpy as np
 
 from datetime import datetime
 from flair.data import Sentence, Token
@@ -21,15 +22,25 @@ non_watermarked = df["non-watermarked"]
 def parse_lemma(lemma_word: str) -> str:
     return lemma_word.replace("_", " ")
 
+def get_wordnet_pos(treebank_tag):
+
+    if treebank_tag.startswith('J'):
+        return wnet.ADJ
+    elif treebank_tag.startswith('V'):
+        return wnet.VERB
+    elif treebank_tag.startswith('N'):
+        return wnet.NOUN
+    elif treebank_tag.startswith('R'):
+        return wnet.ADV
+    else:
+        return ''
+
 def replace_single_word(fl_token: Token) -> str:
     text = fl_token.text
     if len(fl_token.labels) == 0:
         return text
 
-    if fl_token.labels[0].value != "JJ":
-        return text
-
-    syns = wnet.synsets(text, pos=wnet.ADJ)
+    syns = wnet.synsets(text, pos=get_wordnet_pos(fl_token.labels[0].value))
     if len(syns) == 0:
         return text
 
@@ -37,13 +48,21 @@ def replace_single_word(fl_token: Token) -> str:
     lemma_word = random.choice(sy_word.lemma_names())
     return parse_lemma(lemma_word)
 
-def replace_words(text: str) -> str:
+def replace_words(text: str, percent: int=20) -> str:
     fl_sentence = Sentence(text)
+    to_mask = int(np.ceil(len(fl_sentence.tokens) * (percent / 100)))
+
+    mask = np.ones(len(fl_sentence.tokens))
+    mask[:to_mask] = 0
+    np.random.shuffle(mask)
+
     seq_tagger.predict(fl_sentence)
     altered_sentence = ""
-    for token in fl_sentence.tokens:
-        word = replace_single_word(token)
+
+    for token, masked in zip(fl_sentence.tokens, mask):
+        word = replace_single_word(token) if masked else token
         altered_sentence += f"{word} "
+
     altered_sentence = re.sub(r' (?=\W)', '', altered_sentence)
     return altered_sentence
 
