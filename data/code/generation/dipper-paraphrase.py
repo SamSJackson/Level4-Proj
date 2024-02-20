@@ -60,7 +60,7 @@ def paraphrase(
     return res
 
 tokenizer = AutoTokenizer.from_pretrained("google/t5-efficient-large-nl32")
-model_path = "../model_finetuning/saved/google-t5-efficient-large-nl32-25_000-finetuned"
+model_path = "../finetuning/saved/google-t5-efficient-large-nl32-25_000-finetuned"
 base_path = "../../processed/train/"
 model = AutoModelForSeq2SeqLM.from_pretrained(model_path, device_map="cuda")
 file_location = base_path + f"wmarked/model_mistralai-Mistral-7B-Instruct-v0_2_50_delta_5_16_01_2024.csv"

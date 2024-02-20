@@ -3,7 +3,7 @@ import os, argparse
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
-from data.code.implementation.newthickstun.mersenne import mersenne_rng
+from data.code.implementation.stanford.mersenne import mersenne_rng
 
 def generate_shift(model,prompt,vocab_size,n,m,key):
     rng = mersenne_rng(key)

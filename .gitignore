@@ -6,14 +6,22 @@ __pycache__/
 # C extensions
 *.so
 
+# Model folders
+data/code/finetuning/cache_dir
+data/code/finetuning/practice
+data/code/finetuning/runs
+data/code/finetuning/wandb
+data/code/finetuning/saved
+data/code/implementation/wieting/paraphrase-at-scale-english
+
 # Data Folders
 */20news-bydate-test/
 */20news-bydate-train/
 */wikitext-103/
 */signalmedia-1m/
 */model_finetuning/finished_models*
-data/prepared/
 data/raw/
+data/prepared/
 
 
 # Distribution / packaging

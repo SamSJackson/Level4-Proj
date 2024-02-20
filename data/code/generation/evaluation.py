@@ -4,7 +4,7 @@ import pandas as pd
 import torch
 from datetime import datetime
 from transformers import AutoTokenizer
-from data.code.implementation.newkirch.extended_watermark_processor import WatermarkDetector
+from data.code.implementation.maryland.extended_watermark_processor import WatermarkDetector
 
 date = datetime.now().strftime("%d_%m_%Y")
 base_path = "../../processed/train/"

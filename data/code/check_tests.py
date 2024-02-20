@@ -62,7 +62,7 @@ print(kgw_documents_titled)
 
 print(np.sum(kgw_documents_titled) / kgw_documents_titled.shape[0])
 
-# model_path = "model_finetuning/saved/google-t5-efficient-large-nl32-25_000-finetuned"
+# model_path = "finetuning/saved/google-t5-efficient-large-nl32-25_000-finetuned"
 # tokenizer = AutoTokenizer.from_pretrained("google/t5-efficient-large-nl32")
 # model = AutoModelForSeq2SeqLM.from_pretrained(model_path, device_map=device)
 #

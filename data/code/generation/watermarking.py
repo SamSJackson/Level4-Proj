@@ -4,7 +4,7 @@ from datetime import datetime
 
 import torch.cuda
 from transformers import AutoTokenizer, AutoModelForCausalLM, AutoConfig, LogitsProcessorList
-from data.code.implementation.newkirch.extended_watermark_processor import WatermarkLogitsProcessor
+from data.code.implementation.maryland.extended_watermark_processor import WatermarkLogitsProcessor
 
 training_path = "../../prepared/train/daigt/daigt_prompts.csv"
 access_token = os.environ['HF_ACCESS_TOKEN']

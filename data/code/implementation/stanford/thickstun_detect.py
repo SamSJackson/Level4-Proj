@@ -2,13 +2,13 @@ import os, sys, argparse, time
 
 import numpy as np
 from transformers import AutoTokenizer
-from data.code.implementation.newthickstun.mersenne import mersenne_rng
+from data.code.implementation.stanford.mersenne import mersenne_rng
 
 import pyximport
 
 pyximport.install(reload_support=True, language_level=sys.version_info[0],
                   setup_args={'include_dirs': np.get_include()})
-from data.code.implementation.newthickstun.levenshtein import levenshtein
+from data.code.implementation.stanford.levenshtein import levenshtein
 
 
 def permutation_test(tokens, key, n, k, vocab_size, n_runs=100):
