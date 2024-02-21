@@ -60,7 +60,7 @@ def replace_words(text: str, percent: int=20) -> str:
     altered_sentence = ""
 
     for token, masked in zip(fl_sentence.tokens, mask):
-        word = replace_single_word(token) if masked else token
+        word = replace_single_word(token) if masked else token.text
         altered_sentence += f"{word} "
 
     altered_sentence = re.sub(r' (?=\W)', '', altered_sentence)

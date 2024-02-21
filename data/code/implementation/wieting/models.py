@@ -4,13 +4,15 @@ import numpy as np
 import time
 import torch.nn.functional as F
 import sentencepiece as spm
-import pairing
-import utils
+
+import data.code.implementation.wieting.pairing as pairing
+import data.code.implementation.wieting.utils as utils
+
+from torch import optim
 from torch.nn.modules.distance import CosineSimilarity
 from torch.nn.utils.rnn import pad_packed_sequence as unpack
 from torch.nn.utils.rnn import pack_padded_sequence as pack
-from evaluate_sts import evaluate_sts
-from torch import optim
+from data.code.implementation.wieting.evaluate_sts import evaluate_sts
 
 
 def load_model(model_name: str, sp_model: str, data=None, lstm: bool = False, gpu: bool = False):

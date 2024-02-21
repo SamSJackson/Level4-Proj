@@ -1,6 +1,6 @@
 import torch
-from utils import Batch
-from utils import BigExample
+from data.code.implementation.wieting.utils import Batch
+from data.code.implementation.wieting.utils import BigExample
 
 def get_pairs_batch(model, g1, g1_lengths, g2, g2_lengths):
     with torch.no_grad():

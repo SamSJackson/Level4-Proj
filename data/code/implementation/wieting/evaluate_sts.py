@@ -3,9 +3,10 @@ import os
 import io
 import numpy as np
 import logging
-from sacremoses import MosesTokenizer
-from utils import Example
 
+from data.code.implementation.wieting.utils import Example
+
+from sacremoses import MosesTokenizer
 from scipy.stats import spearmanr, pearsonr
 
 def cosine(u, v):

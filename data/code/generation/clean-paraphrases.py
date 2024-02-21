@@ -5,7 +5,7 @@ from datetime import datetime
 date = datetime.now().strftime("%d_%m_%Y")
 
 base_path = "../../processed/train/"
-path = base_path + "paraphrased/replaced_adjectives_samples_mistralai_51_19_02_2024.csv"
+path = base_path + "paraphrased/replaced_adjectives_samples_mistralai_51_21_02_2024.csv"
 df = pd.read_csv(path)
 
 kgw_paraphased_column_names = [f"pp-kgw-{i}" for i in range(1,4)]

@@ -8,7 +8,7 @@ from data.code.implementation.maryland.extended_watermark_processor import Water
 
 date = datetime.now().strftime("%d_%m_%Y")
 base_path = "../../processed/train/"
-data_path = base_path + "cleaned_paraphrased/cleaned_paraphrase_replaced_adjectives_mistralai_51_19_02_2024.csv"
+data_path = base_path + "cleaned_paraphrased/cleaned_paraphrase_replaced_adjectives_mistralai_51_21_02_2024.csv"
 
 df = pd.read_csv(data_path)
 df = df.dropna()

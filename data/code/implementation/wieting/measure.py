@@ -1,22 +1,22 @@
 import numpy as np
 
-from sacremoses import MosesTokenizer
-from models import load_model
-from utils import Example
+from data.code.implementation.wieting.models import load_model
+from data.code.implementation.wieting.utils import Example
 
 def cosine(u, v):
     return np.dot(u, v) / (np.linalg.norm(u) * np.linalg.norm(v))
 
 class Similarity(object):
 
-    def __init__(self, batch_size: int, entok: MosesTokenizer, sp, model, lower_case, tokenize):
-        self.batch_size = 32,
-        self.entok = entok,
+    def __init__(self, batch_size: int, entok, sp, model, lower_case, tokenize):
+        self.batch_size = 32
+        self.entok = entok
         self.sp = sp
         self.model = model
         self.lower_case = lower_case
         self.tokenize = tokenize
         self.similarity = lambda s1, s2: np.nan_to_num(cosine(np.nan_to_num(s1), np.nan_to_num(s2)))
+
 
     def batcher(self, batch):
         new_batch = []
@@ -36,8 +36,6 @@ class Similarity(object):
         return vecs.detach().cpu().numpy()
 
     def score(self, input_text):
-        # TODO: Improve method of reading in this text
-        # Maybe a better way of reading in this text.
         input1 = []
         input2 = []
         for text1, text2 in input_text:
@@ -60,17 +58,23 @@ class Similarity(object):
 
         return sys_scores
 
-def make_sim_object(batch_size, entok, sp, model):
-    sim = Similarity(batch_size=32,entok=entok,
+def make_sim_object(batch_size, entok, model):
+    sim = Similarity(batch_size=batch_size,entok=entok,
                      sp=model.sp,model=model,
                      lower_case=model.args.lower_case,
                      tokenize=model.args.tokenize)
     return sim
 
-def evaluate(sim_object: Similarity, documents: list[str]) -> np.array:
-    # TODO: Maybe parse the text here?
-    ...
-    # return sim_object.score(documents, args)
+def evaluate(sim_object: Similarity, source_document: str, paraphrases: list[str]) -> np.array:
+    # TODO: Remove naive method and allow many-to-one analysis
+    '''
+        Comparing each one individual.
+        Would prefer comparing each one against source as one function.
+        Try and improve later.
+    '''
+    # print(source_document, paraphrases)
+    pairs = [[(source_document, paraphrase)] for paraphrase in paraphrases]
+    return [sim_object.score(pair)[0] for pair in pairs]
 
 
 
