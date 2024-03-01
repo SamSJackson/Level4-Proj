@@ -36,8 +36,8 @@ def main(args):
     torch.manual_seed(args.seed)
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
-    tokenizer = AutoTokenizer.from_pretrained(args.model)
-    model = AutoModelForCausalLM.from_pretrained(args.model).to(device)
+    tokenizer = AutoTokenizer.from_pretrained(args.paraphrase_model)
+    model = AutoModelForCausalLM.from_pretrained(args.paraphrase_model).to(device)
 
     tokens = tokenizer.encode(args.prompt, return_tensors='pt', truncation=True, max_length=2048)
 

@@ -20,19 +20,18 @@ def paraphrase(
         no_repeat_ngram_size=2,
         max_length=7500
 ):
-    # Problem is that this paraphrase requires some length to be the prompt
-    # No prompt does perform worse - albeit still works.
-    split_words = text.split()
+    # split_words = text.split()
+    # prompt = "" if len(split_words) < prompt_length*2 else " ".join(split_words[:prompt_length])
+    # paragraph = " ".join(split_words) if len(prompt) == 0 else " ".join(split_words[prompt_length:])
+    # input_text = f"lexical = 40, order = 0 {prompt} <sent> {paragraph} </sent>"
 
-    # Ensures that the paragraph is X times longer than the prompt length at least.
-    # If this is not possible, skip prompt
-    prompt = "" if len(split_words) < prompt_length*2 else " ".join(split_words[:prompt_length])
-    paragraph = " ".join(split_words) if len(prompt) == 0 else " ".join(split_words[prompt_length:])
-    input_text = f"lexical = 40, order = 0 {prompt} <sent> {paragraph} </sent>"
+    print(f"Original text: {text}")
+    input_text = f"lexical = 40, order = 0 <sent> {text} </sent>"
 
     input_ids = tokenizer(
         input_text,
-        return_tensors="pt", padding="longest",
+        return_tensors="pt",
+        padding="longest",
         max_length=max_length,
         truncation=True,
     ).to(device).input_ids
@@ -42,17 +41,20 @@ def paraphrase(
         input_ids,
         top_p=0.75,
         do_sample=True,
+        max_new_tokens=7500,
     )
 
     res = tokenizer.batch_decode(outputs, skip_special_tokens=True)
-    res = f"{prompt} {' '.join(res)}"
+    # res = f"{prompt} {' '.join(res)}"
+    res = f"{' '.join(res)}"
+    print(f"Paraphrased text: {res}")
     return res
 
 tokenizer = AutoTokenizer.from_pretrained("google/t5-efficient-large-nl32")
-model_path = "../finetuning/saved/google-t5-efficient-large-nl32-25_000-finetuned"
+model_path = "../finetuning/saved/google-t5-efficient-large-nl32-100-finetuned"
 base_path = "../../processed/train/"
 model = AutoModelForSeq2SeqLM.from_pretrained(model_path, device_map="cuda")
-file_location = base_path + f"wmarked/model_mistralai-Mistral-7B-Instruct-v0_2_50_delta_5_16_01_2024.csv"
+file_location = base_path + f"wmarked/mistralai-Mistral-7B-Instruct-v0_2_4_paraphrased_27_02_2024.csv"
 
 df = pd.read_csv(file_location)
 prompt_length = 7
@@ -79,7 +81,7 @@ for i in range(3):
     non_watermarked = nwmarked_paraphrased.copy()
 
 output_path = base_path + f"paraphrased/paraphrase_dipper_samples_mistralai_{len(kgw_watermarked)}_{date}.csv"
-df.to_csv(output_path, index=False)
+# df.to_csv(output_path, index=False)
 
 print("Finished paraphrasing")
 

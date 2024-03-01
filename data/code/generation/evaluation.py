@@ -18,7 +18,6 @@ non_watermarked = df["non-watermarked"]
 
 z_threshold = 4.0
 model_name = "mistralai/Mistral-7B-Instruct-v0.2"
-attempt_cuda = True
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 gamma = 0.25
 delta = 5.0

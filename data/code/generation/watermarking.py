@@ -34,9 +34,6 @@ print(f"Output Path: {output_path}")
 
 tokenizer = AutoTokenizer.from_pretrained(model_name, token=access_token)
 config = AutoConfig.from_pretrained(model_name, token=access_token)
-# Necessary for GPTQ models
-# config.quantization_config["disable_exllama"] = False
-# config.quantization_config["exllama_config"] = {"version": 2}
 model = AutoModelForCausalLM.from_pretrained(model_name,
                                              device_map=device,
                                              token=access_token,

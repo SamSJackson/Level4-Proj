@@ -14,6 +14,9 @@ nwm_paraphrased_column_names = [f"pp-unwatermarked-{i}" for i in range(1,4)]
 base_columns = ["kgw-watermarked", "non-watermarked"]
 
 all_relevant_columns = kgw_paraphased_column_names + nwm_paraphrased_column_names + base_columns
+print(f"{df.columns=}")
+print(f"{all_relevant_columns=}")
+
 
 conclusion = []
 for column in all_relevant_columns:

@@ -1,5 +1,5 @@
 import pandas as pd, numpy as np
-import torch, evaluate, nltk
+import torch, evaluate
 from datasets import Dataset, load_dataset
 from datetime import datetime
 from transformers import (
@@ -19,7 +19,7 @@ model_name = "google/t5-efficient-large-nl32"
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 print("Loaded tokenizer")
 
-model = AutoModelForSeq2SeqLM.from_pretrained(model_name, device_map="cuda") # Using accelerate library for device mapping
+model = AutoModelForSeq2SeqLM.from_pretrained(model_name, device_map="cuda")
 print("Loaded model")
 
 def preprocess_function(row):
@@ -73,6 +73,7 @@ training_args = Seq2SeqTrainingArguments(report_to="none",
                                          generation_max_length=200,
                                          save_strategy="epoch")
 
+
 train_dataset = load_dataset('csv', data_files=train_path)['train'].map(
     preprocess_function,
     batched=False
@@ -96,5 +97,5 @@ trainer = Seq2SeqTrainer(
 trainer.train()
 print("Finished training")
 model_path = model_name.replace("/", "-")
-trainer.save_model(f"saved/{model_path}-finetuned")
+trainer.save_model(f"saved/{model_path}-100_000-finetuned")
 print("Finished saving")

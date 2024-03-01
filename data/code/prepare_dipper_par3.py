@@ -1,9 +1,14 @@
 import re, tqdm, os
 import pandas as pd, numpy as np
 from datasets import Dataset
+import random
+
+# regex_train = re.compile('.*.sents_.*.train_ctrl_no_ctx*')
+# regex_valid = re.compile('.*.sents_.*.valid_ctrl_no_ctx.tsv')
 
 regex_train = re.compile('.*.sents_.*.train_ctrl_no_ctx*')
 regex_valid = re.compile('.*.sents_.*.valid_ctrl_no_ctx.tsv')
+
 
 train_directories = [
     root + "/" + file for root, dirs, files in os.walk("../raw/dipper-par3/")
@@ -19,9 +24,10 @@ def make_dataset(directories, sample_amount):
     for file_path in tqdm.tqdm(directories):
         with open(file_path, encoding='utf8') as f:
             lines = f.readlines()
-            parsed_lines = np.random.choice([line.split('\t')[0] for line in lines if len(line.split('\t')) == 2], size=sample_amount)
-            dataset_dict["input_text"] = dataset_dict.get("input_text") + [p[0] for p in parsed_lines]
-            dataset_dict["target_text"] = dataset_dict.get("target_text") + [p[1] for p in parsed_lines]
+            parsed_lines = [line.split('\t') for line in lines if len(line.split('\t')) == 2]
+            random_parsed_lines = random.sample(parsed_lines, sample_amount)
+            dataset_dict["input_text"] = dataset_dict.get("input_text") + [p[0] for p in random_parsed_lines]
+            dataset_dict["target_text"] = dataset_dict.get("target_text") + [p[1] for p in random_parsed_lines]
             lines = None
     df = pd.DataFrame(dataset_dict)
     df = df.replace(to_replace='', value=np.nan).dropna()

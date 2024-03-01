@@ -241,15 +241,15 @@ def batcher(params, batch):
             p = " ".join(tok)
         if params.lower_case:
             p = p.lower()
-        if params.model.args.debug:
+        if params.paraphrase_model.args.debug:
             print("Logging STS: {0}".format(p))
         p = params.sp.EncodeAsPieces(p)
         p = " ".join(p)
         p = Example(p, params.lower_case)
-        p.populate_embeddings(params.model.vocab, params.model.zero_unk, params.model.ngrams)
+        p.populate_embeddings(params.paraphrase_model.vocab, params.paraphrase_model.zero_unk, params.paraphrase_model.ngrams)
         new_batch.append(p)
-    x, l = params.model.torchify_batch(new_batch)
-    vecs = params.model.encode(x, l)
+    x, l = params.paraphrase_model.torchify_batch(new_batch)
+    vecs = params.paraphrase_model.encode(x, l)
     return vecs.detach().cpu().numpy()
 
 def evaluate_sts(model, params):

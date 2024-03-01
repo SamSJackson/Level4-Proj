@@ -196,7 +196,6 @@ class WatermarkLogitsProcessor(WatermarkBase, LogitsProcessor):
 
         green_tokens_mask = self._calc_greenlist_mask(scores=scores, greenlist_token_ids=list_of_greenlist_ids)
         scores = self._bias_greenlist_logits(scores=scores, greenlist_mask=green_tokens_mask, greenlist_bias=self.delta)
-
         return scores
 
 
