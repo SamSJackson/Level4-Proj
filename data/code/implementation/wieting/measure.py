@@ -66,13 +66,11 @@ def make_sim_object(batch_size, entok, model):
     return sim
 
 def evaluate(sim_object: Similarity, source_document: str, paraphrases: list[str]) -> np.array:
-    # TODO: Remove naive method and allow many-to-one analysis
     '''
         Comparing each one individual.
         Would prefer comparing each one against source as one function.
         Try and improve later.
     '''
-    # print(source_document, paraphrases)
     pairs = [[(source_document, paraphrase)] for paraphrase in paraphrases]
     return [sim_object.score(pair)[0] for pair in pairs]
 

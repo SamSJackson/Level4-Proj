@@ -1,5 +1,5 @@
 import tqdm, os
-import pandas as pd, numpy as np
+import pandas as pd
 from datetime import datetime
 from pathlib import Path
 
@@ -41,8 +41,8 @@ def generate_documents_and_get_path(
                                                        gamma=gamma, delta=delta,
                                                        seeding_scheme="simple_1")
     kgw_sampled_answers = []
-    unwatermarked_sampled_answers = []
 
+    unwatermarked_essays = df["text"]
     tasks = df["instructions"]
 
     def generate_essay(model_inputs, logitslist=None):
@@ -85,11 +85,8 @@ def generate_documents_and_get_path(
         kgw_output_text = generate_essay(model_inputs, LogitsProcessorList([kgw_watermark_processor]))
         kgw_sampled_answers.append(kgw_output_text)
 
-        nwmark_output_text = generate_essay(model_inputs)
-        unwatermarked_sampled_answers.append(nwmark_output_text)
-
     df["kgw-watermarked"] = kgw_sampled_answers
-    df["non-watermarked"] = unwatermarked_sampled_answers
+    df["non-watermarked"] = unwatermarked_essays
 
     df.to_csv(output_path / output_file, index=False)
 

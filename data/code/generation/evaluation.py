@@ -77,6 +77,6 @@ if __name__ == "__main__":
     evaluate_z_scores_and_get_path(
         gamma=0.25,
         z_threshold=4.0,
-        input_dir="../../processed/similarity/similarity_5_02_03_2024.csv",
+        input_dir="../../processed/similarity/similarity_448_05_03_2024.csv",
         target_dir="../../processed/"
     )
