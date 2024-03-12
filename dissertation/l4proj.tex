@@ -8,12 +8,19 @@
 \usepackage{amssymb}
 \usepackage{amsmath}
 \usepackage{enumitem}
-
+\usepackage{subcaption}
 
 %==============================================================================
 %% Commands 
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[section]
+
+\newtheorem{proposition}{Proposition}[section]
+\newtheorem{example}{Example}[section]
+
+\DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
+
+\newcommand{\codefont}[1]{{\fontfamily{qcr}\selectfont #1}}
 
 \setitemize{noitemsep}
 %==============================================================================
@@ -22,7 +29,7 @@
 
 %==============================================================================
 %% METADATA
-\title{Recursive Paraphrasing on AI-Watermarked Text}
+\title{An Analysis on the Robustness of Watermarking Generative Text}
 \author{Samuel Jackson}
 \date{\today}
 
@@ -35,7 +42,7 @@
     \vskip 0.5em
     Given the rise of LLMs and the growing power of malicious content-generation, 
     methods of identifying and authenticating machine-generated content has become a necessity. 
-    This paper aims to investigate the robustness of modern techniques in watermarking Transformer-based LLMs at inference through paraphrasing attacks. The paper presents evidence of poor defense towards paraphrasing attacks
+    This paper aims to investigate the robustness of modern techniques in watermarking Transformer-based LLMs at inference through paraphrasing attacks. The paper presents evidence of poor defense in large documents against paraphrasing attacks
     where even a simple paraphraser can reduce detect-ability by ??\%.
 \end{abstract}
 
@@ -50,9 +57,9 @@
 % Please note that you are under no obligation to sign 
 % this declaration, but doing so would help future students.
 %
-%\def\consentname {My Name} % your full name
-%\def\consentdate {20 March 2018} % the date you agree
-%
+\def\consentname {Samuel Jackson} % your full name
+\def\consentdate {\today} % the date you agree
+
 \educationalconsent
 
 
@@ -164,15 +171,25 @@ If you are unsure about how to cite online sources, please see this guide: \url{
 
 
 %==================================================================================================================================
+    
 \chapter{Background}
-PROVIDE INTRO TO THIS BACKGROUND SECTION. 
+The task of generating content has blown up since the conception of transformers \citep{vaswani2023attention}. This chapter will provide an overview to the principal ideas of text-generative models alongside an insight into recent literature on text-watermarking as well as methods of removing such watermarks. 
 
-\section{Textual Representation}
-    In order to process text and train language models, we require datasets and numerical representations of text to provide our models and algorithms. These datasets are referred to as \emph{corpora}.
+The sections are split to respect the order of text generation, watermark generation and watermark attack, in order to aid the reader. The watermark generation and removal steps contain literature surveys of relevant techniques. 
 
-    A \emph{document} is an element of the corpus. % Better way to say this sentence
-    To find the numerical representation of a document, irrelevant information is removed first through a process of known as tokenisation.
+In particular, the literature survey acts as inspiration in our approach to the understanding the problem. Whilst not all techniques that are discussed are used in this paper, they are certainly relevant in terms of understanding our problem.
+
+\section{Text Generation}
+    As our discussion is focused on watermarking generated text, we first provide an explanation into how text is produced from Transformer-based LLMs.
+
+    This section will go over the concepts behind providing text to models, as well as how the model chooses the next word in a sentence.
+    
     \subsection{Tokenisation}
+        In order to process text and train language models, we require datasets and numerical representations of text to provide to our models and algorithms. These datasets are referred to as \emph{corpora}.
+
+        A \emph{document} is an element of the corpus.
+        To find the numerical representation of a document, we attempt to provide some degree of structure through a process known as tokenisation.
+
         \begin{definition}[Token]
             A \emph{token} is a sequence of characters, often referring to a word or a subword.
         \end{definition}
@@ -180,218 +197,349 @@ PROVIDE INTRO TO THIS BACKGROUND SECTION.
         % Perhaps I could reference how humans learn words from context instead.
         Often times, without noticing, the human brain overlooks words deemed unimportant \citep{Rayner2011-pk}. This phenomena is replicated within tokenisation as we aim to highlight important parts of document.
 
-        Rule-based tokenisation exists in the form of lemmatization, stemming and stopword removal whereas tokenisation models are also developed through methods like training a Byte Pair Encoding (BPE) tokeniser \citep{Gage1994ANA, sennrich2016neural} on a text corpus.
-
-        % Maybe another image of tokenisation but show different tokeniser. 
-        \begin{figure}[h]
+        Rule-based tokenisation exists in the form of lemmatization, stemming and stopword removal whereas tokenisation models are also developed through methods like training a Byte Pair Encoding (BPE) tokeniser \citep{Gage1994ANA, sennrich2016neural} on a text corpus. As seen in Figure~\ref{fig:tokenisation-process}, a tokenisation function inputs a string and produces a list of tokens, based on the vocabulary. 
+        
+        \begin{figure}[!h]
+            \captionsetup[subfigure]{labelformat=empty}
             \centering
-            \includegraphics[width=1\linewidth]{images/background/tokenisation-process.png}
-                \caption{Image portraying the tokenisation process. Tokenisation was completed using the \texttt{Mistral-7B-v0.1} tokeniser \citep{jiang2023mistral}, a BPE tokeniser.}
-            \label{fig:tokenisation-process} 
+            \begin{subfigure}{\textwidth}
+                \includegraphics[width=\linewidth]{images/background/tokenisation-process-mistral.png}
+                \caption{\emph{(a)}}
+                \label{fig:tokenisation-process-mistral}
+            \end{subfigure}
+
+            \begin{subfigure}{\textwidth}
+                \includegraphics[width=\linewidth]{images/background/tokenisation-process-bert.png}
+                \caption{\emph{(b)}}
+                \label{fig:tokenisation-process-bert}
+            \end{subfigure}
+
+            \caption{Figure visualises the potential differences in tokenisation functions. Figure (a) was completed using the \codefont{Mistral-7B-v0.1} tokeniser \citep{jiang2023mistral}, a BPE tokeniser. Figure (b) was completed using the \codefont{bert-base-uncased} tokeniser \citep{DBLP:journals/corr/abs-1810-04805}, a WordPiece tokeniser.}
+            \label{fig:tokenisation-process}
         \end{figure}
 
         \begin{definition}[Vocabulary]
             A \emph{vocabulary} is the collection of tokens recognised by a tokenisation function.
         \end{definition}
 
-        Importantly for our discussion on watermarking language models, the training of these tokenisation models generates a \emph{unique} vocabulary dependent on the text corpus. The tokenisation uniqueness is propagated through the transformer-based architecture into the embedding portion.
+        Importantly for our discussion on watermarking language models, the training of these tokenisation models generates a \emph{unique} vocabulary dependent on the text corpus. The difference in recognised tokens is evident when comparing the lists of tokens in Figure~\ref{fig:tokenisation-process}. The tokenisation uniqueness is propagated through the transformer-based architecture.
 
-    \subsection{Embedding}
-        Despite tokenisation providing a degree of structure to the unstructured data, the process of \emph{embedding} within a transformer-based architecture is crucial in allowing the model to identify semantic meaning and relationships between tokens. 
+        
+    
+    \subsection{Causal Generation}
+        \label{sec:decoder-generation}
+        Text generation is treated as a predict-next-token task. The principle idea is to only look at the previous tokens and consider which token is most likely to next appear. This task is known as Causal Generation.
 
-        Word embedding is a specialised form of principal component analysis (PCA), where we train a model to represent a token with reduced dimensions. This reduces dimensions as well as allows the model to gain insight into tokens.
+        In an attempt to respect the depth of this paper, I will not be going over the decoder layer. The important thing to note is that the decoder layer will create a matrix of dimensions $C \times E$, where $C$ is the context window and $E$ is the embedding dimension. For the purposes of causal generation, the information about all the previous tokens is within the final row of this matrix.
+
+        % They do not know what word embedding is. Perhaps rephrase this somehow. 
+        As can be seen in Figure~\ref{fig:decoding-process}, the final row is taken from the matrix and applied to a linear function. This linear function is another learnable parameter which attempts to undo the word embedding process, bringing the column dimension to match the vocabulary size. 
 
         \begin{figure}[h]
             \centering
-            \includegraphics[width=1\linewidth]{images/background/embedding-process.png}
-                \caption{Preliminary image portraying the embedding process.}
-            \label{fig:embedding-process} 
+            \includegraphics[height=10cm, width=1\linewidth, keepaspectratio]{images/background/decoding-process.pdf}
+            \caption{Figure displaying the decoding process ending at the probability distribution, as generative strategies changes how the probability distribution is used. The variables $C$, $E$, $V$ refer to the context window, embedding dimension and vocabulary size respectively. Note that the transformations are not numerically accurate and only showcasing process.}
+            \label{fig:decoding-process} 
         \end{figure}
 
-        I would like a descriptive image about this portion because it is certainly useful and somewhat difficult to understand. 
-        
-        Ask Jake about this. Show him my understanding through drawing.
-        Hot Encoded Matrix is: [Context Window x Vocab Size]. Word Embedding Matrix is: [Vocab Size x Embedding Dimension]
-        
-        How does a decoder-only model have word embeddings?
-        I am going to draw an image because it allows a simpler explanation at Maryland watermark stage.
-        
-\section{Generation}
-    Causal language models, such as GPT2 \citep{gpt2Radford2019LanguageMAgpt}, use a decoder-only architecture, avoiding the encoding process. The encoder-lacking architecture is representative of the method of text generation within causal language models. 
-    
-    \subsection{Decoders}
-        A causal model treats text generation as a predict-next-token task. The principle idea is to look at the previous tokens and consider which token is most likely to next appear. WE DON'T NEED AN ENCODER, BUT WHY?
-    
-        \begin{figure}[h]
-            \centering
-            \includegraphics[width=1\linewidth]{images/background/decoding-process.png}
-                \caption{Preliminary image portraying the decoding process.}
-            \label{fig:embedding-process} 
-        \end{figure}
+        In the later stages of Figure~\ref{fig:decoding-process}, we apply a linear function to final hidden state. This linear function is a learnable parameter which aims to turn from the embedding dimension to the vocabulary. Importantly, however, is that this linear function is does not perfectly map to a single token. To solve this, we view the output of the function as logits and use these logits to create our probability distribution.
     
         \begin{definition}[Logits]
-            Let $p$ be the probability of an event happening. The \emph{logit}, or log odds of the event occurring is defined as: 
-            \begin{align}
+            Let $p$ be the probability of an event happening. The \emph{logit} is defined as: 
+            \begin{equation*}
                 \text{logit}(p) = \log\bigg(\frac{p}{1-p}\bigg),
-            \end{align}
+            \end{equation*}
             where logit is defined as $\text{logit}: (0,1) \rightarrow (-\infty, \infty)$.
         \end{definition}
         
-        The low probability values become negative under this method. This feature, alongside the wide range of values, provides simple interpretability. Hence, logits have become convention within language models.
+        The values of low probability become negative under the logit function. This feature, alongside the wide range of the codomain, provides simple interpretability. As such, logits have become convention within language models.
 
-    % This should probably be rewritten. 
-    % Main points should be:
-    %   - Large Language Models are intensive and trained differently.
-    %   - Models have different broad architectures for different tasks.
-    %   - Existing methods are an investigation on Causal Language Models.
-    \subsection{Language Modelling}
-        A Large Language Model (LLM) is an data-intensive machine learning model, expensively trained on large amounts of text. The training process will vary dependent on objective, and the architecture changes correspondingly.
+        The created probability distribution is used for multiple generative strategies which include greedy, beam-generation, multinomial sampling, top-$k$ sampling and nucleus sampling. These differing strategies have different purposes but, importantly, all the methods produce one single token from each probability distribution.
 
-        Models focused on translation, summarization and paraphrasing tend to be Sequence to Sequence (Seq2Seq) models. Seq2Seq models use an encoder-decoder architecture, encoding each token with reference to the entire input. The decoding is then completed in a left-to-right sequence.
-`
-        Famous services like ChatGPT are Causal Language models, using a unidirectional (left-to-right) decoder architecture. This means, at each stage, the generation of a token is only based on the previous tokens. 
-
-% I like this section. Simply fill out photos and references now.
-\section{Watermarks}
-    \subsection{Content Watermarks}
-        \begin{definition}[Watermark]
-            A \emph{watermark} is a faint figure or signature designed to represent ownership or authorship.
-        \end{definition}
-        Watermarks can be found everywhere in every day life with examples ranging from the American 5 dollar bill to a music producer having an audio tag. 
-        
-        IMAGE EXAMPLE OF WATERMARK
-
-        The varying methods of portraying media and art has required that methods of watermarking similarly grow in variety and effectiveness. \citet{xiang2017digital} covers traditional methods of audio watermarking, such as echo hiding and spread spectrum, which aim to achieve imperceptibility by deceiving our hearing. 
-        
-        PROVIDE METHODS OF IMAGE WATERMARKING 
-
-        To hide a signature within text is a different task as it does not have the opportunity to deceive audio, whereas visual sensor could only be deceived through homoglyphs.
-        Modern-day techniques use generative methods that allow for alterations in the text, be it the characters used or biasing particular tokens.
-    \subsection{Text Watermark Requirements}
-         Watermarks come in many forms, be it a signature: ``Written by Sam Jackson'' or a well-defined pattern of ending every word with the character `n'.
-         
-         Given the purpose of watermarking generative content, there are the following primary goals that an AI watermark aims to achieve:
-         \begin{itemize}
-            \setlength\itemsep{0.5em}
-            \item \textbf{Robust} - Capable of withstanding attempts to remove watermark.
-            \item \textbf{Agnostic} - Information beyond generated text is not required for detection.
-            \item \textbf{Imperceptible} - The watermark should not be visible, be it a change in quality or a written signature.
-        \end{itemize}
-        These requirements are specifically designed to encourage watermarks which are zero-shot and capable of covering any generative large language model, even closed source models. \cite{perhaps an example/rewrite this}.
-    \subsection{Attacking methods}
-        No matter the robustness of a watermark, methods of successfully attacking are real threats. 
-
-        A classic and simple technique is \emph{word-replacement}. This is a rule-based technique, free from computational constraints, which has success against models, as mentioned in \cite{reference here}, but suffers in textual clarity.
-
-        Embedding generated-text within a larger document is a subtle method which can be successful. Students are known to have used AI for a particular paragraph or sentence of an essay, as opposed to the entire essay. Detection within a larger document is reported to be less successful \cite{okay okay, pray for the source} where only a small portion of the text is generated. 
-
-        Opposing the prior methods, this method is particular to causal language modelling. Due to the nature of generative content, instructing the prompt can be an effective method to combat watermarking methods focused on manipulating the logits at inference time \citep{kirchenbauer2023watermark}. 
-
-        One of the most intensive methods is paraphrasing. An advanced form of word-replacement that attempts to understand the underlying meaning of a text whilst re-structuring the text for their own purpose. This method is certainly the most computationally intensive as it requires a language model to re-structure the document, barring a rule-based paraphraser. The question that we discuss in this paper is whether the computational cost is worth it. 
-
-\section{Paraphrasing}
-    \subsection{English Definition \& Purpose}
-        % I actually like this definition now.
-        \begin{definition}[Paraphrase]
-            To repeat something written or spoken using different words, often in a humorous form or in a simpler and shorter form that makes the original meaning clearer (Cambridge Dictionary, 2024).
-        \end{definition}
-    \subsection{Attacking Method}
-        \begin{itemize}
-            \setlength\itemsep{0.5em}
-            \item Instead of altering generating content, the content is used as prompt.
-            \item The model is funnelled through a Seq2Seq model (as opposed to causal), using an encoder-decoder architecture, to produce a paraphrase.
-            \item By definition, defeats watermarkings methods like whitespacing and homoglyphs. 
-        \end{itemize}
-    \subsection{DIPPER Paraphrase Model}
-        % Rewrite this paragraph.
-        Paraphrasers are Seq2Seq models, as the task bears strong resemblance to translation. In fact, many models are trained on text which is twice-translated \citet{to french and back!}. Open-source paraphrasers fine-tuned on sentence translations (cite this?), leading to the sentence-context focus. Fortunately, there is one paper that generated their own paragraph-based paraphraser.
-
-        % The twice-translation would be a simple photo, and interesting.
-        % Perhaps I could evaluate with twice-translation too. 
+        Logits are important with regards to Section~\ref{sec:maryland-watermark}, where we discuss the method of generating the Maryland Watermark.
     
-        % Things that I want to mention
-        %   - Paraphrase model developed in Retrieval paper. | TICK
-        %   - Paraphraser has variable parameters, order and lexical diversity | TICK
-        %   - Training completed through reordering paragraphs and aligning paragraphs from different translations. | TICK
-        %   - Semantic similarity | TICK 
-        
-        Through the methods described in the paper by \citet{krishna2023paraphrasing}, a paraphraser which is focused on paragraph-context is developed. The paraphraser permits for variable amounts of change, with lexical diversity and sentence-order diversity as parameters are included in the paraphrasing process. 
-        
-        \citet{Par3_2022} provides a dataset of book translations, many of the same book. Through sentence realignment and order-shuffling, the model is fine-tuned on an artificial paragraph and scored against the original paragraph. Importantly, each document begins with variables for order and complexity. 
+\section{Generating Watermarks}
+    \begin{definition}[Watermark]
+        A \emph{watermark} is a faint figure or signature designed to represent ownership or authorship.
+    \end{definition}
 
-        % Maybe an image to describe this because it is not a simple concept.
-    \subsection{Semantic Similarity}
-        As defined earlier, paraphrasing is intended to maintain the original meaning. As a process, changing words and ordering of a document can impact the meaning. Hence, a similarity metric to consider differences numerically provides useful insight.
-
-        Typically, we use the vector embeddings of documents to find the similarity through a given function. Mathematically, we define similarity as a function $\Omega : S \times S \rightarrow [0, 1]$. A popular such similarity measure is the cosine similarity function. 
-
-        % TALK ABOUT FLAWS IN SIMILARITY MEASURE. 
-        %   - Heavily dependent on context words (some words have greater bearing)
-        %   - Larger document, each word has less meaning so harder to compare. 
-        %   - Vector embeddings are a product of pre/fine-training so each model is different.
-
-        % Continue writing about this
-        % Be more precise in the differences, and why do they have to know this background? 
-        Hence, we look towards a paraphrase similarity method proposed by \citet{wieting2023paraphrastic}. It maintains same similarity concepts but on a model which is focused on detecting paraphrase similarity.
-
-\section{Literature Survey}
-    \subsection{Maryland Watermark}
-        Show pdf image which colours some parts green and some red, based on greenlist tokens.
-        \begin{itemize}
-            \setlength\itemsep{0.5em}
-            \item Reference Kirchenbauer paper
-            \item Discuss hard watermark method 
-            \item Intro to soft watermark method
-        \end{itemize}
-    % \subsection{Stanford Distortion Method} % Is this even necessary? I don't think so.
-    \subsection{Inevitability of Failed-Detections} % Rename 
-        Talk about \citet{sadasivan2023aigenerated} and the statistical analysis deducing that detection methods will become obsolete.
-    \subsection{Easy Watermarking Methods}
-        Incredible paper about simple watermarks that covers the simple concepts. A brief section of the results portion prieves attacking methods to this technique \citep{sato2023embarrassingly}.
-
-% This is just for me to remember. Not staying like this.
-\section{Research Questions}
-    Each section should have a reference to these questions in some way. i.e. How does this impact paraphrasing on a paragraph-level as opposed to sentence-based? 
-    \subsection{Does recursive paraphrasing provide more effective removal of a watermark?}
-    \subsection{How does sentence-based paraphrasing compare to paragraph-based paraphrasing?}
-    \subsection{Is there feasibility of use within an academic context?}
-    \subsection{Is a simple word replacement algorithm sufficient?}
-    
-    
-%================================================================================================
-\chapter{Methods}
-\textbf{What did you do to implement this idea, and what technical achievements did you make?}
-
-\section{Experimentation Approach}
-    To show the robustness or fragility of the watermark, documents are generated with the watermark, using the soft method in \citet{kirchenbauer2023watermark}. The generated documents were consequently manipulated through various methods, such as paraphrasing and word-replacement. To understand the cost of attacking the documents, I use a document similarity measure as a way to determine how much of the original meaning is maintained.
+    Watermarks are widely present within society with examples ranging from an American dollar bill to a music producer having an audio tag. 
 
     \begin{figure}[h]
         \centering
-        \includegraphics[width=1\linewidth]{images/methods/flow-chart-method.pdf}
-        \caption{Flow Chart describing the method of experimentation. NEEDS UPDATING}
-        \label{fig:method-flow-chart} 
+        \includegraphics[height=3.5cm, width=1\linewidth, keepaspectratio]{images/background/dbill-highlighted.png}
+        \caption{Figure shows an \$100 dollar bill, with a red circle highlighted a watermarked portion. The detection of the highlighted watermark requires holding the bill up to light and revealing a (second) face of Benjamin Franklin.}
+         \label{fig:dbill-watermark} 
     \end{figure}
 
-    The experimentation process is complete with an evaluation of Z-Scores, using a formula defined in \citet{kirchenbauer2023watermark}. The Z-Score permits a binary classification on whether the documents are watermarked, allowing us to identify the removal of a watermark. Furthermore, the multiple methods help us determine if paraphrasing is a necessary step in removing given watermark.
+    Watermarks come in many forms, be it a signature: ``Written by Sam Jackson'' or a well-defined pattern of ending every word with the character `n'. In this section, we look towards recent literature which covers more subtle methods of watermarking while attempting to adhere to the primary goals of watermarking.
+         
+    Given the purpose of watermarking generative content, there are the following primary goals that an AI text watermark aims to achieve:
+    \begin{itemize}
+        \setlength\itemsep{0.5em}
+        \item \textbf{Robust} - Capable of withstanding attempts to remove watermark.
+        \item \textbf{Agnostic} - Information beyond generated text is not required for detection.
+        \item \textbf{Imperceptible} - The watermark should not be visible, be it a change in quality or a written signature.
+    \end{itemize}
 
-\section{Dataset}
-    To generate our watermarked documents, an appropriate 
-    \subsection{Source}
-        From Kaggle, ongoing competition, aiming to detect AI Generated Text \citep{llm-detect-ai-generated-text}. The dataset provides real essays, scraped from a separate Kaggle competition \citet{link feedback prize 3 kaggle}.
-        Give some more information on this. Are all prompts the same style? Are all prompts even tasks?
+    These requirements are specifically designed to encourage universal watermarking techniques due to the constant growing number of large language models and changing architecture decisions.
+    
+    \subsection{Maryland Watermark}
+        \label{sec:maryland-watermark}
+        \citet{kirchenbauer2023watermark} proposes a new method of watermarking text which takes advantage of the probabilistic nature of text generation. This section will go over the ideas of the Maryland Watermark, a technique which laid the foundations of watermarks in LLMs at the time of this paper.
+
+        Due to the nature of casual generation, each token is generated procedurally from the vocabulary. The Maryland paper proposes splitting the available vocabulary for each token. The split lists are labelled a \emph{green} list and a \emph{red} list, where green tokens are used for detection. Notably, the splitting is a random sort and partition based on the hash of the last token.
+
+        In particular, there are two primary watermarking techniques, \emph{Hard Watermarking} and \emph{Soft Watermarking}. Hard Watermarking only allows the causal model to select tokens from the green list whereas Soft Watermarking simply increases the probability of the green tokens within the probability distribution. Figure~\ref{fig:soft-watermarking-process} outlines the technique and the change that the Soft Watermarking process makes compared to the generation in Figure~\ref{fig:decoding-process}.
+
+        \begin{figure}
+            \centering
+            \includegraphics[width=1\linewidth, keepaspectratio]{images/background/biasing-process.pdf}
+            \caption{Figure portrays the Soft Watermarking Process highlighting the bias process, where the bias value is 5. Like Figure~\ref{fig:decoding-process}, $C$ is the context window, $E$ is the embedding dimension and $V$ is the vocabulary size. The image ends at the probability distribution, avoiding showing the generation strategy, in order to keep the image abstract. Note that the transformations are not numerically accurate and simply showcasing process, except the biasing.}
+            \label{fig:soft-watermarking-process}
+        \end{figure}
+
+        As opposed to Hard Watermarking, Soft Watermarking provides parameters that determine the strength of the watermark. The parameters are $\delta$, the logit bias, and $\gamma$ is the fraction of the vocabulary which is the green list. Typical values for $\delta$ and $\gamma$ are within the ranges $[1, 10]$ and $[0.25, 0.5]$, respectively.
+
+        \citet{kirchenbauer2023watermark} provides an analysis on the Soft Watermarking technique, outlining the performance on differing bias and generation strategies. Without describing the necessary metrics, the paper shows that watermarking, with no detection-errors, can be achieved at reasonable strengths of watermarking whilst maintaining quality of the text.
         
-    \subsection{Other possible datasets}
-        I chose to opt for a instruct model as opposed to an auto-generated method. The auto-generated method was experimented with, with a dataset from SignalMedia 1M Articles. 
-    \subsection{Structure \& Sample}
-        The dataset is composed of four columns: \textbf{id}, \textbf{text}, \textbf{instructions}, \textbf{source\_text}.
+    \subsection{Easymark}
+        \label{sec:easymark}
+        As opposed to complicated and robust watermarking techniques, like described above, \citet{sato2023embarrassingly} beautifully proposes simple watermarks that are not intended to survive bad actors. This portion will briefly go over the watermarks as well as highlight the argument of watermark futility from \citet{sato2023embarrassingly}.
 
-        TABLE DISPLAYING SAMPLE DOCUMENTS
+        The provided watermarks are labelled as \emph{Whitemark}, \emph{Variantmark} and \emph{Printmark}. All of the methods are weak to bad actors using attacking techniques such as word-replacement, paraphrasing and homoglyph removal however the method of watermarking leads to no degradation in perplexity. 
 
-\section{Model Selection}
-    \subsection{Availability and Limitation}
-        With access to 24GB VRAM, I had the opportunity to use models up to 7B models. Utilising methods like LoRA (Low-Rank Approximation) and half-precision (16-bit $\rightarrow$ 8-bit etc), I could use models up to 13B, sacrificing some accuracy. 
-    \subsection{Prompt Generation}
-        Talk about how I used instruct generation as opposed to autogenerated, as used in Maryland and Krishna (DIPPER).
+        Whitemark suggests changing all the whitespace characters to a particular, non-regular, whitespace character which exists in unicode. This is only a linear-time addition to the generation process and the adjustment is not visible to the human eye.
+
+        Variantmark is focused on Chinese, Japan and Korean (CJK) languages which are not dense with whitespace. As an adjustment for these languages, Variantmark takes advantages of the glyphs within CJK languages containing multiple Unicode sequence points which can be invisibly replaced. The glyph characters contain the same semantic meaning despite a different representation. This process acts as watermarking as the alteration is non-standard.
+
+        Finally, Printmark creates a minute visual change in the letters through similar looking unicode characters. This change is visual enough to appear on printed appear, hence the name, but also subtle enough to not spot unless looking for it. Figure~\ref{fig:fi-ligature} is an example of the technique used for Printmark.
+
+        \begin{figure}[h]
+            \centering
+            \includegraphics[width=1\linewidth, height=2.7cm, keepaspectratio]{images/background/inf-ligature.png}
+            \caption{Figure showing the similarity between words where the `f' and `i' characters have been changed to the unicode ligature U+FB01, presenting the method used in Printmark.}
+            \label{fig:fi-ligature}
+            \nocite{infinity-ligatures-pict}
+        \end{figure}
+
+        Within the paper, \citet{sato2023embarrassingly} discusses the strength of bad actors and describes a statistical analysis as to why a perfect watermark is impossible. In fact, the paper proposes that it is more prudent to place a low-effort watermark and not place too much confidence within watermarks. 
+
+        Paired with our research questions, our discussion on current watermarking robustness will hopefully bring light to the worthiness of watermarking.
+    
+    \subsection{Retrieval Defense}
+        \citet{krishna2023paraphrasing} proposes a retrieval-based defensive technique, designed to hold strong against paraphrasing attacks. This section will cover the principle ideas and primary results surrounding defense that are discussed in the paper. 
+
+        Contrary to the other watermarking methods, this is a defensive technique that requires no generative-stage changes to the LLMs. The primary idea is to store AI-generated documents into a database and determine if a document is AI-generated by completing a retrieval call into the database.
+
+        % Results at this stage are unknown to reader
+        This method achieves significant results with the evaluation taking place over multiple models. Before paraphrasing, retrieval detection has an accuracy of 100\% on 1\% FPR and after strong machine-paraphrasing, there is more than 96\% accuracy across all models. This is compared to the Maryland watermark which achieves 55.8\% accuracy, a starkly lower accuracy.
+        
+        Notably, for these results, however, is that the retrieval corpus matches exactly the initial generated documents and the retrieval technique is dependent on a reliable database. Furthermore, differing language models may require different databases which could make the retrieval query an expensive cost. 
+
+\section{Attacking Watermarks}
+        No matter the robustness of a watermark, methods of successfully attacking are real threats. 
+
+        Within this stage, we will discuss the word-replacement strategy, paraphrasing and translation-attacks. Specifically, we highlight a number of techniques that we will be applying for our method of investigation alongside relevant literature which prove other successful methods of attacking.
+
+    \subsection{Word Replacement}
+        A classic and simple technique is \emph{word-replacement}. This is perhaps the most primitive form of attacking. As opposed to restructuring a sentence or paragraph, we replace words with suitably appropriate words.
+
+        This method is dependent on a Part of Speech (POS) tagger model. A POS model is trained to give grammatical structure to words. This helps us understand how to replace a particular word. Figure~\ref{fig:word-replacement-process} provides a clear outline of the method, containing the Part of Speech tagging. 
+
+        \begin{figure}[h]
+            \centering
+            \includegraphics[height=5cm, width=1\linewidth, keepaspectratio]{images/background/word-replacement-process.pdf}
+            \caption{Figure displays the word replacement process where 20\% of all words are replaced with similar words, with respect to their part of speech. This process is completed by my word replacement method and the Flair Part of Speech Tagger \citep{akbik2018coling}.}
+            \label{fig:word-replacement-process}
+        \end{figure}
+        
+        The major flaw in this method is the lack of semantic understanding. The benefit that transformers provide all large language models is thrown away through the use of this technique and drastically reduces the quality of the text.
+        
+        Variations of this technique exist, such as only replacing adjectives with respect to the POS tagger. These variations are designed to compensate for the lack of semantic understanding that a word-replacement algorithm has.
+
+        Whilst the method comes with many flaws, this paper will discuss an analysis of this attack, something which is novel amongst current research papers.
+    
+    \subsection{Paraphrasing}
+        Given that the techniques of watermarking are focused around the particular words used within a generated document, we aim to remove those `bad' words, whilst maintaining or improving the clarity of the original meaning. However, without knowing the watermarked words, word-replacement might not be sufficient. 
+
+        In this section, we discuss the solution to our problem with paraphrasing and how that extends into large language models, as well as recent papers surrounding paraphrasing attacks.
+
+        \begin{definition}[Paraphrase]
+            \label{def:paraphrase}
+            To repeat something written or spoken using different words, often in a humorous form or in a simpler and shorter form that makes the original meaning clearer (Cambridge Dictionary, 2024). % Perhaps I should cite this in references
+        \end{definition}
+
+        As can be seen in Example~\ref{example:paraphrase}, we often restructure sentences for clarity which is something that word-replacement is incapable of doing without a degree of semantic understanding.
+
+        \begin{example}
+            \label{example:paraphrase}
+            The two sentences below are examples of paraphrases.
+            \begin{enumerate}[label=(\alph*)]
+                \item I take my dog on a walk in Central Park each Wednesday. 
+                \item Every Wednesday, I walk my dog in Central Park.
+            \end{enumerate}
+            These two sentences maintain semantic meaning while holding a different sentence structure. 
+        \end{example}
+
+        In recent literature, \citet{krishna2023paraphrasing} discusses the attacks of paraphrasing by providing a paraphrase language model known as DIPPER. Through finetuning, this model is a paragraph-context paraphrase model with variable parameters. These parameters determine the degree of order and lexical change performed by the paraphrasing. 
+
+        Within the DIPPER paper, results are provided in Section 4.1 of the paper which convey the drastically decreasing detection accuracy as the order and lexical parameters increase.
+        The paper's highlighted statistic shows that where false detection of human-text as AI-text is at 1\%, the DIPPER paraphraser drops accuracy of DetectGPT from 70.3\% to 4.6\%.
+
+        Similarly, in other literature, \citet{sadasivan2023aigenerated} investigates recursive paraphrasing on watermarked documents with two models, DIPPER and a LLaMa-based chat model. In particular, the analysis takes place on generated documents of approximately 300 tokens. 
+
+        The paper reports results of clear degradation in detection through the iterations of DIPPER-based paraphrasing. With the case where false-detection of human-text as AI-text is at 1\%, the chance that a watermarked document is detected drops from 99.8\% in the original document to 30.9\% in the third paraphrase. This is significant change at minimal cost, as reported by \citet{sadasivan2023aigenerated}, where the cost is discussed with respect to the perplexity metric.
+
+        This paper will be using a variation of the DIPPER model for paraphrasing as well as the recursion concepts as part of our evaluation into the robustness of watermarking. 
+
+    \subsection{Translation-Based Paraphrasing}
+        \citet{he2024watermarks} provides a deep investigation into the process of using translation to remove watermarks. As opposed to training a new paraphraser, \citet{he2024watermarks} utilises existing translation models in order to paraphrase. This section will give a brief overview as to how this works and the performance of the technique. 
+
+        As can be seen in Figure~\ref{fig:translation-removal-process}, the principle idea behind translation-based paraphrasing is twice-translation, going to another language and back. 
+
+        \begin{figure}[h]
+            \centering
+            \includegraphics[height=3.5cm, width=1\linewidth, keepaspectratio]{images/background/translation-removal-process.pdf}
+            \caption{Figure above displays the translation attacking process with twice translation involving English and Spanish. Translations were completed with the \texttt{opus-mt-en-es} and \texttt{opus-mt-es-en} models respectively \citep{TiedemannThottingal:EAMT2020}.}
+            \label{fig:translation-removal-process}
+        \end{figure}
+        
+        This method is particularly effective because the architecture behind paraphrasing and translation is the same: Sequence-to-Sequence (Seq2Seq). The Seq2Seq architecture is a decoder which has access to all the tokens in a document, not just the previous ones. This drastically improves the performance of LLMs on tasks like summarisation as it takes different context into account. 
+
+        \citet{he2024watermarks} outlines clear results which portray the efficacy of this technique. A highlighted result is, in the case of false-detection of human-text as AI-text is at 10\%, the chance that a watermarked document is detected drops from 99.2\% to 21.3\%. This is a significant change and shows that the translation attacks bring the performance of a random classifier. 
+
+        An important note is that this result is retrieved from analysis of the watermark at a weaker strength than this paper's watermark. This means that the detection accuracy would be greater if the watermark was of similar strength to ours. Furthermore, since the false detection is at 10\% which is greater than previously mentioned results, the detection accuracy is greater whilst at a greater risk.
+
+    \subsection{Other Techniques}
+        Despite the number of these techniques, there does exist others that I will not be able to provide a deep background into within this paper.
+
+        A technique which was previously mentioned was \emph{homoglyph removal}. This technique is used to counter embedding watermarks through ASCII and Unicode characters, a perfect counter to the watermarking concepts in Section~\ref{sec:easymark}. The technique consists of a script which tests each character against Unicode pairs, replacing uncommon variations of a character to the norm. 
+
+        In the spirit of counters, a counter to the Maryland technique is \emph{prompt engineering}. This technique is nuanced to the application of the Maryland watermark however I will attempt to cover it in a brief sentence. The Maryland Watermark generates the split list based on the previous token so the order and choice of word is particularly important. Through manipulating the prompt, the output can be instructed to replace all the whitespace characters with an emoji and lead to fixing the splitting of the lists. Consequently, the emojis can be removed and the detection can no longer deduce the green and red lists. Without the lists, the watermark cannot be found. 
+
+        Both of these techniques are particularly effective counters but they will not be further discussed in this paper as they are only applicable to certain watermarks. 
+
+\section{Approach}  
+    Following all of this background, we summarise the primary points that will be used for the rest of our paper. Within the rest of this paper, we shall be generating documents and attacking them through three primary methods.
+
+    Our attacking methods consist of:
+    \begin{itemize}
+        \setlength\itemsep{0.5em}
+        \item \textbf{Paragraph-Based Paraphrasing}: Paraphrasing the entire document, supplying the entire context. 
+        \item \textbf{Sentence-Based Paraphrasing}: Paraphrasing each sentence within a document, only supplying context of the given sentence.
+        \item \textbf{Word Replacement}: Changing words within the document to similar words.
+    \end{itemize}
+    
+    \subsection{Problem Phrased}
+        Our problem can be succinctly defined in the following question: ``To what extent are modern-day watermarking techniques robust against bad actors?''
+
+        This paper breaks down that question into 3 smaller sub-questions. These sub-questions form our research questions for the paper and what we aim to understand.
+        \begin{enumerate}[label={\textbf{RQ\arabic*}:}, leftmargin=4em]
+            \item Does recursive paraphrasing provide more effective removal of a watermark?
+            \item Is sentence-based paraphrasing sufficient compared to recursive paraphrasing?
+            \item Is a simple word replacement algorithm sufficient to remove the watermark?
+        \end{enumerate}
+
+%====================================================================================================
+    
+\chapter{Methods}
+\textbf{What did you do to implement this idea, and what technical achievements did you make?}
+
+With the aim of understanding the robustness of watermarks in generative text, we discuss our method that takes us from the generation of watermarked documents to the evaluation of attacked documents.
+
+\section{Overarching Approach}
+    Before detailing all the design choices, I present the overarching implementation of our research method to aid in following along amongst the choices. The visual in Figure~\ref{fig:method-flow-chart} is provided to further assist in understanding the approach.
+
+    \begin{figure}[h]
+        \centering
+         \includegraphics[height=10cm, width=1\linewidth, keepaspectratio]{images/methods/research-process.pdf}
+        \caption{Figure displaying the research processing, highlighted into the stages.}
+        \label{fig:method-flow-chart} 
+    \end{figure}
+    
+    The approach begins with creating watermarked documents through a large language model, given a dataset of prompts. These watermarked documents will be paired alongside real essays, written by humans, to help ensure the quality of the watermark.
+
+    Consequently, these essays are passed through our chosen attacking methods. These attacking methods will be two variants of paraphrasing as well as word-replacement. 
+
+    Finally, we will evaluate the watermark quality of all the documents, which will include all the attacked documents as well as the original documents. There will be two primary evaluation stages with further evaluation metrics to help display the results in a meaningful representation.
+
+\section{Generation Stage}
+    \subsection{Dataset}    
+        To generate our watermarked documents, prompts had to be provided to a causal language model. To match our causal model, the prompts were selected to be instructions. The chosen dataset ended up being a collection of essay prompts, paired with real student essays. 
+    
+        Kaggle, a data science platform, hosted a competition focused on detecting AI generated text \citep{llm-detect-ai-generated-text}. The competition led to the creation of model-finetuning augmenting datasets. One such augmenting dataset is known as the DAIGT dataset, produced by \citet{Paullier2023-rx}, and is the dataset that will be used.
+
+        The associated student essays were scraped from a separate Kaggle competition \citep{feedback-prize-english-language-learning}, guaranteeing the humanity of the essays.
+
+        The dataset is composed of four columns: \emph{id}, \emph{text}, \emph{instructions}, \emph{source\_text}. There is 2421 documents within the dataset. The \emph{source\_text} column is misleading as this column is generated by ChatGPT, as per \citet{Paullier2023-rx}, contrary to what the name suggests. 
+
+        \begin{table}[h]
+            \centering
+            \small 
+            \begin{tabular}{@{}l|p{0.25\linewidth}|p{0.25\linewidth}|p{0.25\linewidth}@{}}
+                \toprule
+                id & text & instructions & source\_text \\ \midrule
+                6060D28C05B6 & Some schools in United States ofter classes from home because is good option to students . Some scho... & Task: Write a persuasive essay on whether or not classes from home should be offered as an option f... & When considering the pros and cons of attending classes from home, there is no doubt that there are... \\ \cmidrule(r){1-4}
+                60623DB5DE7A & Four-day work week, a remarkable idea to conserve energy and resources, some businesses have adopted... & Task: Research the advantages and disadvantages of a four-day school week and write an essay to det... & One of the primary arguments for implementing a four-day school week is the potential cost savings.... \\ \bottomrule
+            \end{tabular}
+            \captionsetup{width=.95\textwidth}
+            \caption{The above table displays 2 of the existing 2421 rows within the DAIGT dataset, where columns are cut for brevity and readability.}
+            \label{table:dataset-sample} 
+        \end{table}
+
+        Within other literature, the method of generating watermarked documents was auto-generative prompting. This style of prompting influences model and dataset choice.
+    
+        Initial experiments with auto-generative prompting were headed with the dataset created by \citet{Signal1M2016}, a dataset of 1 million news articles. 
+        Given the popularity and use of instruct models, I chose to focus on the instruct-style datasets as opposed the typical auto-generative style. This focus away from auto-generative prompting is not investigated amongst current literature which could lead to differences in watermarking quality.
+        
+    \subsection{Model}
+        In order to generate the watermark, we look for an appropriate model. Current literature is typically using auto-generative and chat models \citep{pang2024attacking, liu2024adaptive, kirchenbauer2023watermark, sadasivan2023aigenerated} so this paper will look towards other models.
+
+        Specifically, this paper will focus on an Instruct model, a model which is finetuned towards dealing with instruct-style prompts. The chosen model is a Mistral model,\codefont{Mistral-7B-Instruct-v0.2} \citep{jiang2023mistral}, which is a 7 billion parameter model.
+
+        From Figure~\ref{fig:prompting-method}, the prompting method is catered towards an Instruct response, with an actual essay prompt from our chosen dataset.
+        
+        \begin{figure}[h]
+            \centering
+            \includegraphics[height=4cm, width=1\linewidth, keepaspectratio]{images/methods/prompt-template.pdf}
+            \caption{Figure portraying the prompting method used for the generation of watermarked essays, where \textbf{\{chosen\_task\}} denotes a document from the DAIGT dataset.}
+            \label{fig:prompting-method}
+        \end{figure}
+
+        The chosen generation strategy was multinomial sampling, with the max number of new tokens generated set at 7500, to allow for potentially large documents.
+        
+    \subsection{Watermark}    
+        Our chosen application of watermarking will be the Maryland Watermark, outlined in Section~\ref{sec:maryland-watermark}. Specifically, we will be using the Soft Watermarking method which better permits more realistic language generation. 
+
+        The Maryland Watermark was the ideal watermark as it is the original paper on the logit-manipulation-based watermarking. Other watermarking techniques are present, such as Easymark from Section~\ref{sec:easymark} or a Semantics-based watermark \citep{hou2024ksemstamp}, however these watermarks are not implemented to respect the breadth of this paper. 
+
+        Our implementation is completed using the HuggingFace Python library \citep{wolf-etal-2020-transformers}, alongside code provided by \citet{kirchenbauer2023watermark}. This library provides an interface to the language model as well as the ability to manipulate logits at the generation stage, prior to the creation of the probability distribution, as outlined in Figure~\ref{fig:soft-watermarking-process}. 
+
+        In particular, we choose our bias and green list fraction to be $\delta = 5$ and $\gamma = 0.25$ respectively. This means that for the generation of each token, a quarter of the vocabulary are `green' tokens. Similarly, those `green' tokens will have a bias of 5 added to them. These parameters are in line with results from \citet{kirchenbauer2023watermark} and reflect a strong watermark that maintains a reasonable degree imperceptibility.
+
+\section{Attacking Stage}
+    In this section, I will be going over our attacking technique. In order to understand the robustness of watermarks, it is necessary to attempt watermark removal with a diverse range of methods. 
+
+    
+
+    \subsection{Paragraph-Based}
+        \begin{itemize}
+            \item Why did I use DIPPER paper?
+            \item How did I create my own version of the paraphraser? 
+            \item What were the parameters chosen for my generation given this model?
+        \end{itemize}
+    
+    \subsection{Sentence-Based}
+    \subsection{Word Replacement}
+
+\section{Evaluation Stage}
+    \subsection{Watermark Detection}
+    \subsection{Document Similarity}
+
+\section{Collection Stage}
+    \subsection{Results}
+        Discussion here about expected results size. Dataframe size and whatnot.
     
 \section{Implementation of Maryland Watermark}
     The Maryland Watermark \citep{kirchenbauer2023watermark} made the code publicly available, which aided in customising the method for my purposes.
@@ -409,7 +557,7 @@ PROVIDE INTRO TO THIS BACKGROUND SECTION.
         Within T5, numerous options are available. The paper, presented by \citet{tay2022scale}, provides analysis into efficient scaling as well as model checkpoints to be exploited. Amongst the efficient models, a DeepNarrow architecture is recommended to improve performance. This led to the decision to fine-tune the T5-Efficient-Large-NL32, where NL32 refers to the number of transformer blocks and Large refers to the approximately 1 billion parameters.
 
     \subsection{Training Approach}
-        The initial paper fine-tuned their model on $\sim$6,000,000 paraphrase pairs, taking between 384 and 768 GPU hours \citep{krishna2023paraphrasing}. Incapable of replicating the same compute periods, the model I produced was fine-tuned on 100,000 paraphrase pairs, taking 12 GPU hours.
+        The initial paper fine-tuned their model on $\sim$6,000,000 paraphrase pairs, taking between 384 and 768 GPU hours \citep{krishna2023paraphrasing}. Incapable of replicating the same compute periods, the model I produced was fine-tuned on 100,000 paraphrase pairs, taking 14 GPU hours.
         Further specifications into the training arguments are in the appendix. % Refer to appendix.
 
         The dataset provided by DIPPER is split between Google translated and human translated. These sections are further split into nondescript subsections. In an effort to replicate the original paper to the fullest, both sections were sampled, taking a uniform distribution of documents from the respective subsections. 
@@ -574,9 +722,45 @@ Avoid putting large blocks of code in the report (more than a page in one block,
 %==================================================================================================================================
 \chapter{Results} 
 \textbf{How good is your solution? How well did you solve the general problem, and what evidence do you have to support that?}
+In this section, we try to answer our primary research questions provided the results we generated from the methods section. 
 
-\section{Recursive Paragraph-Paraphrasing}
+
+\section{Paragraph-Based Paraphrasing}
+    % With this section, I want to answer the question about whether paragraph paraphrasing is sufficient and whether recursion is even more effective.
+
+    % Already discussed generating results. What do they mean? 
+
+    % The results clearly that almost all watermarked documents do not remain paraphrased. 
+    % Why is this? It shows that detection can be evaded 
+    
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=1\textwidth]{images/results/z-score-para-comparison.pdf}
+            \caption{The figure above is a scatter plot which shows the Z-Score before and after paraphrasing. The (x,y) position of each datapoint represents the z-score before and after paraphrasing respectively. Points above the horizontal threshold line denote documents that are still watermarked despite paraphrasing. Points beyond the vertical threshold line denote documents which are successfully watermarked.}
+        \label{fig:paragraph-z-score} 
+    \end{figure}
+
+    
+
+    \subsection{Recursive Paragraph-Based Paraphrasing}
+        % Discussion on the impact of recursion.
+    
+        \begin{table}[h]
+            \centering
+            \begin{tabular}{p{0.3\linewidth}|p{0.1\linewidth}|p{0.1\linewidth}|p{0.1\linewidth}|p{0.1\linewidth}|p{0.1\linewidth}}
+                Stage of Paraphrasing & FPR & TNR & TPR & FNR & Similarity \\ \hline
+                Original Watermarked Text & 0.0 & 1.0 & 1.0 & 0.0 & 1.0 \\
+                1st Paraphrase Iteration & 0.0 & 1.0 & 0.016 & 0.984 & 0.802 \\
+                2nd Paraphrase Iteration & 0.0 & 1.0 & 0.203 & 0.797 & 0.708 \\
+                3rd Paraphrase Iteration & 0.0 & 1.0 & 0.027 & 0.973 & 0.645 \\ \hline
+            \end{tabular}
+            \captionsetup{width=\linewidth}
+            \caption{Table displays the False Positive Rate (FPR), True Negative Rate (TNR), True Positive Rate (TPR), False Negative Rate (FNR) and the mean similarity to the watermarked document based on the evaluation of 448 watermarked and DIPPER paraphrased documents.}
+            \label{table:paragraph-ratings}
+        \end{table}
+
     \subsection{Graph}
+    
         Goal is portray the effectiveness of paraphrasing to Z-Score whilst portraying the insignificance of repeatedly paraphrasing.
 
         Effectiveness of paraphrasing could be portrayed through scatterplot, drastically reducing Z-Score. \newline 
@@ -585,8 +769,16 @@ Avoid putting large blocks of code in the report (more than a page in one block,
     \subsection{Convergence of Results}
     \subsection{Semantic Similarity}
         Use Weiting PS-P for paraphrase similarity measure. \citep{wieting2021paraphrastic}
-\section{Paragraph-based vs Sentence-Based}
+\section{Sentence-Based}
+
     \subsection{Graph}
+        \begin{figure}[h]
+        \centering
+        \includegraphics[width=1\textwidth]{images/results/z-score-sent-comparison.pdf}
+            \caption{The figure above is a scatter plot which shows the Z-Score before and after paraphrasing. The (x,y) position of each datapoint represents the z-score before and after paraphrasing respectively. Points above the horizontal threshold line denote documents that are still watermarked despite paraphrasing. Points beyond the vertical threshold line denote documents which are successfully watermarked.}
+        \label{fig:paragraph-z-score} 
+    \end{figure}
+    
         Goal is to show that both sentence-based and paragraph-based techniques work. The tradeoff between techniques lies in the quality of paraphrases.
 
         Subplots of scatterplots will show effectivness and similarities.
@@ -659,6 +851,8 @@ Summarise the whole project for a lazy reader who didn't read the rest (e.g. a p
 \end{itemize}
 
 \section{Limitations}
+    % Don't forget to write about how code cannot be word-replaced or paraphrased easily.
+
 \section{Future Work}
 \section{Personal Thoughts}
 

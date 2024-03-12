@@ -50,6 +50,9 @@ def calculate_similarity_and_get_path(
     output_file = f"similarity_{df.shape[0]}_{date}.csv"
     df.to_csv(output_path / output_file, index=False)
 
+    del sp_model
+    del para_model
+
     return output_path / output_file
 
 if __name__ == "__main__":

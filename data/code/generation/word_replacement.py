@@ -92,6 +92,8 @@ def word_replace_and_get_path(
     output_file = f"word_replaced_{df.shape[0]}_{date}.csv"
     df.to_csv(output_path / output_file, index=False)
 
+    del seq_tagger
+
     return output_path / output_file
 
 if __name__ == "__main__":

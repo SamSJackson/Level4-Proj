@@ -72,7 +72,7 @@ def generate_documents_and_get_path(
     for chosen_task in tqdm.tqdm(tasks):
         prompt = f'''You are a student working on the following assignment.
     
-        Write an essay based on the following task in no more than a 100 words.
+        Write an essay based on the following task in no more than a 100 words:
         {chosen_task}
         '''
         messages = [{
@@ -89,6 +89,9 @@ def generate_documents_and_get_path(
     df["non-watermarked"] = unwatermarked_essays
 
     df.to_csv(output_path / output_file, index=False)
+
+    del model
+    del tokenizer
 
     return output_path / output_file
 

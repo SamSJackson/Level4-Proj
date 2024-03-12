@@ -73,6 +73,9 @@ def sentence_paraphrase_and_get_path(
     output_file = f"sentence_paraphrased_{df.shape[0]}_{date}.csv"
     df.to_csv(output_path / output_file, index=False)
 
+    del model
+    del tokenizer
+
     return output_path / output_file
 
 if __name__ == "__main__":

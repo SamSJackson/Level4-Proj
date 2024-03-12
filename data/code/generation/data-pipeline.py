@@ -6,6 +6,8 @@ from data.code.generation.clean_paraphrases import clean_paraphrases_and_get_pat
 from data.code.generation.paraphrase_similarity import calculate_similarity_and_get_path
 from data.code.generation.evaluation import evaluate_z_scores_and_get_path
 
+import gc
+
 def cmd_print(text):
     print(f"{'-'*50}")
     print(text)
@@ -23,7 +25,7 @@ def cmd_print(text):
         - Evaluate Z-Scores
 '''
 
-no_documents = 450
+no_documents = 500
 no_paraphrases = 3
 target_dir = "../../processed/"
 
@@ -32,9 +34,9 @@ gamma = 0.25
 delta = float(5)
 
 lexical = 40
-order = 0
+order = 20
 
-word_replacement = 20
+word_replacement = 25
 
 watermarked_df_path = generate_documents_and_get_path(
     gamma=gamma,

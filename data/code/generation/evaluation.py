@@ -70,6 +70,8 @@ def evaluate_z_scores_and_get_path(
     output_file = f"evaluated_{df.shape[0]}_{date}.csv"
     df.to_csv(output_path / output_file, index=False)
 
+    del tokenizer
+
     return output_path / output_file
 
 
