@@ -257,6 +257,9 @@ In particular, the literature survey acts as inspiration in our approach to the 
         The created probability distribution is used for multiple generative strategies which include greedy, beam-generation, multinomial sampling, top-$k$ sampling and nucleus sampling. These differing strategies have different purposes but, importantly, all the methods produce one single token from each probability distribution.
 
         Logits are important with regards to Section~\ref{sec:maryland-watermark}, where we discuss the method of generating the Maryland Watermark.
+
+    \subsection{Generation Strategies}
+        Talk about top-p sampling, multinomial sampling and beam search. 
     
 \section{Generating Watermarks}
     \begin{definition}[Watermark]
@@ -343,7 +346,9 @@ In particular, the literature survey acts as inspiration in our approach to the 
         Within this stage, we will discuss the word-replacement strategy, paraphrasing and translation-attacks. Specifically, we highlight a number of techniques that we will be applying for our method of investigation alongside relevant literature which prove other successful methods of attacking.
 
     \subsection{Word Replacement}
-        A classic and simple technique is \emph{word-replacement}. This is perhaps the most primitive form of attacking. As opposed to restructuring a sentence or paragraph, we replace words with suitably appropriate words.
+        A classic and simple technique is \emph{word-replacement}. In this section, I will cover the motivation behind word-replacement as well as an overview of the technique.
+
+        This is perhaps the most primitive form of attacking. As opposed to restructuring a sentence or paragraph, we replace words with suitably appropriate words. We are motivated to complete word-replacement because it is a low-cost approach, comparatively, given the lack of an intensive large language model. Furthermore, the word-replacement algorithm has the potential to remove the so-called `green tokens', reducing the chance of being detected as watermarked.  
 
         This method is dependent on a Part of Speech (POS) tagger model. A POS model is trained to give grammatical structure to words. This helps us understand how to replace a particular word. Figure~\ref{fig:word-replacement-process} provides a clear outline of the method, containing the Part of Speech tagging. 
 
@@ -430,12 +435,15 @@ In particular, the literature survey acts as inspiration in our approach to the 
         \item \textbf{Sentence-Based Paraphrasing}: Paraphrasing each sentence within a document, only supplying context of the given sentence.
         \item \textbf{Word Replacement}: Changing words within the document to similar words.
     \end{itemize}
+
+    % Discuss the defensive phase as well as evaluation? 
     
     \subsection{Problem Phrased}
         Our problem can be succinctly defined in the following question: ``To what extent are modern-day watermarking techniques robust against bad actors?''
 
         This paper breaks down that question into 3 smaller sub-questions. These sub-questions form our research questions for the paper and what we aim to understand.
         \begin{enumerate}[label={\textbf{RQ\arabic*}:}, leftmargin=4em]
+            \label{sec:research-questions}
             \item Does recursive paraphrasing provide more effective removal of a watermark?
             \item Is sentence-based paraphrasing sufficient compared to recursive paraphrasing?
             \item Is a simple word replacement algorithm sufficient to remove the watermark?
@@ -510,71 +518,139 @@ With the aim of understanding the robustness of watermarks in generative text, w
         The chosen generation strategy was multinomial sampling, with the max number of new tokens generated set at 7500, to allow for potentially large documents.
         
     \subsection{Watermark}    
+        \label{sec:watermark-implementation}
         Our chosen application of watermarking will be the Maryland Watermark, outlined in Section~\ref{sec:maryland-watermark}. Specifically, we will be using the Soft Watermarking method which better permits more realistic language generation. 
 
         The Maryland Watermark was the ideal watermark as it is the original paper on the logit-manipulation-based watermarking. Other watermarking techniques are present, such as Easymark from Section~\ref{sec:easymark} or a Semantics-based watermark \citep{hou2024ksemstamp}, however these watermarks are not implemented to respect the breadth of this paper. 
 
         Our implementation is completed using the HuggingFace Python library \citep{wolf-etal-2020-transformers}, alongside code provided by \citet{kirchenbauer2023watermark}. This library provides an interface to the language model as well as the ability to manipulate logits at the generation stage, prior to the creation of the probability distribution, as outlined in Figure~\ref{fig:soft-watermarking-process}. 
 
-        In particular, we choose our bias and green list fraction to be $\delta = 5$ and $\gamma = 0.25$ respectively. This means that for the generation of each token, a quarter of the vocabulary are `green' tokens. Similarly, those `green' tokens will have a bias of 5 added to them. These parameters are in line with results from \citet{kirchenbauer2023watermark} and reflect a strong watermark that maintains a reasonable degree imperceptibility.
+        Specifically, we choose our bias and green list fraction to be $\delta = 5$ and $\gamma = 0.25$ respectively. This means that for the generation of each token, a quarter of the vocabulary are `green' tokens. Similarly, those `green' tokens will have a bias of 5 added to them. These parameters are in line with results from \citet{kirchenbauer2023watermark} and reflect a strong watermark that maintains a reasonable degree imperceptibility.
 
 \section{Attacking Stage}
     In this section, I will be going over our attacking technique. In order to understand the robustness of watermarks, it is necessary to attempt watermark removal with a diverse range of methods. 
 
-    
+    As highlighted in Figure~\ref{fig:method-flow-chart}, we choose to paraphrase attack with a sentence-based and paraphrase-based paraphraser. Furthermore, we apply our word-replacement algorithm as an attacking method. All of the prior methods will be discussed in this section, in the listed order.
 
-    \subsection{Paragraph-Based}
-        \begin{itemize}
-            \item Why did I use DIPPER paper?
-            \item How did I create my own version of the paraphraser? 
-            \item What were the parameters chosen for my generation given this model?
-        \end{itemize}
+    The mentioned techniques precisely cover our research questions, \textbf{RQ1}, \textbf{RQ2} and \textbf{RQ3}, which helps us answer our overarching questions of watermark robustness.
+
+    \subsection{Paragraph-Based Paraphrasing}
+        Our attacking approach of paraphrasing with respect to the paragraph is based on the idea of supplying the maximal amount of context. With more context, the model is afforded greater potential to gleam the semantic meaning of a document. 
     
-    \subsection{Sentence-Based}
+        To create a paragraph-based paraphraser, we choose a model with the same architecture as a translation model. \citet{krishna2023paraphrasing} proposes precisely this model, known as DIPPER. In fact, the paper discusses finetuning from dataset generation to a finetuned model. Unfortunately, due to computational constraints, we could not use the given model. As a result, we choose to create our own model, with the principles from this initial paper. For brevity, I will refer to this model as \emph{$p$-paraphraser}.
+        
+        Specifically, we finetune a Sequence-to-Sequence (Seq2Seq) model with a dataset of paragraph pairs. We decide upon one of Google's T5 models, models designed for being refined on specific tasks. We chose to use \codefont{t5-efficient-large-nl32}. The suffix of this model refers to the number of transformer blocks, where 32 is larger than the norm. The large number of transformer block adheres to a Deep-Narrow architecture, a recommendation from \citet{tay2022scale}, the paper which recommended these models.
+
+        To construct our dataset, we lend from \citet{krishna2023paraphrasing} and use their dataset, which I will refer to as kPar3. Par3 \citep{Par3_2022} is the predecessor to kPar3, prior to processing, and presents paragraph-aligned translations of books. Figure~\ref{fig:par3-collection-process} provides a visual description of how the data is collected.
+
+        \begin{figure}[h]
+            \centering
+            \includegraphics[width=1\linewidth, height=5cm, keepaspectratio]{images/methods/par3-collection-explanation.pdf}
+            \caption{Figure describing how the Par3 data is created and produced. Figure is outlining that a famous book is translated by multiple distinct people. The respective translation paragraphs are aligned with eac
+         other and considered paraphrases.}
+            \label{fig:par3-collection-process}
+        \end{figure}
+
+        The kPar3 dataset created documents that contained $\sim$6,000,000 paraphrase pairs, split between Google translated and the human translated described above. Within each section, there is further nondescript subsections. These subsections are composed of documents which provide context to the paraphrase and those that which do not. The structure of the dataset is described in Figure~\ref{fig:kpar3-structure}. Each document starts with the arguments \emph{lexical} (L) and \emph{order} (O), as seen in Figure~\ref{fig:kpar3-sample-comparison}, where each argument only has values from the set \{0, 20, 40, 60, 80, 100\}. These arguments are included to impose an understanding of paraphrasing strength in the model.
+
+        \begin{figure}[h]
+            \centering
+            \includegraphics{images/methods/kpar3-structure.pdf}
+            \caption{Figure describing how the kPar3 is structured}
+            \label{fig:kpar3-structure}
+        \end{figure}
+        
+        To respect the time it will take to train $p$-paraphraser, we sample the kPar3 dataset. Importantly, we only sample from paraphrase pairs with no context. A visual comparison between context and non-context paraphrase is provided in Figure~\ref{fig:kpar3-sample-comparison}. Non-context pairs were chosen to avoid finding an appropriate context-split within a document to be paraphrased. Furthermore, by creating a context-split, the available text to be paraphrased is reduced. However, it is worth noting that context-paraphrases perform better in the original paper \citep{krishna2023paraphrasing}.
+            
+        \begin{figure}[h]
+            \centering
+            \captionsetup[subfigure]{labelformat=empty}
+            \begin{subfigure}{.5\textwidth}
+                \centering
+                \includegraphics[width=.9\linewidth]{images/methods/kpar3-context-sample.pdf}
+                \caption{\emph{(a)} Context Sample}
+                \label{fig:kpar3-context}
+            \end{subfigure}%
+            \begin{subfigure}{.5\textwidth}
+                \centering
+                \includegraphics[width=0.9\linewidth]{images/methods/kpar3-non-context-sample.pdf}
+                \caption{\emph{(b)} Non-context Sample}
+                \label{fig:kpar3-non-context}
+            \end{subfigure}
+            \caption{Figure displays comparison between a paraphrase pair with context (a), and a paraphrase without context (b). The context portion in (a) is highlighted red for clarity. Furthermore, in (a), the <sent> tags denotes the text to be paraphrased. The target section refers to the desired output of text. Our dataset sample only contains examples like shown in (b). The terms `lexical' and `order' refer to the parameters used for determining paraphrase strength.}
+            \label{fig:kpar3-sample-comparison}
+        \end{figure}
+        
+        The original paper trains the model on the entire kPar3 dataset, taking between 384-768 GPU hours. Incapable of replicating the same compute periods, the finetuned model that I present is trained on our sampling of 100,000 documents, taking 14 GPU hours. Further specifications into the training arguments are provided as an appendix. 
+
+        Finally, to attack our documents, we apply paraphrasing attacks on the entire document with the parameters L40 and O20, describing a moderate paraphrase. Similarly, our generation strategy is top-$p$ sampling, as suggested in the original paper \citep{krishna2023paraphrasing}. The paraphrasing is repeatedly recursively to assist in our understanding of \hyperref[sec:research-questions]{\textbf{RQ1}}.
+
+        
+    \subsection{Sentence-Based Paraphrasing}
+        Opposing the prior method, we aim to separate the paragraph into sentences here and paraphrase each sentence independently. In this section, I will cover the algorithm and model that helps us answer \hyperref[sec:research-questions]{\textbf{RQ2}}.
+
+        With regards to the model, we chose a model known as the \codefont{ChatGPT Paraphraser}\citep{chatgpt_paraphraser}. Similar to the paragraph model previously described, this is a model built off of T5, \codefont{T5-base} specifically. The paraphraser is trained on a synthetic dataset of paraphrases produced by ChatGPT, hence the name. As before, for brevity, I will refer to this model as \emph{$s$-paraphraser}.
+
+        This model was chosen due to a lack of sentence-based models within research literature and consequent popularity of the model within the HuggingFace platform.
+
+        As our attacking method, we complete sentence-based tokenisation with the help of the Natural Language Toolkit (NLTK) \citep{bird2009natural}. Each sentence is separated and passed to our paraphaser, similarly using top-$p$ sampling. The paraphrased sentences are connected together once more, as sentences, maintaining their order.
+
+        The existence of $s$-paraphraser is precisely what we need, alongside our paragraph-based paraphaser, in order to answer \hyperref[sec:research-questions]{\textbf{RQ2}}.
+    
     \subsection{Word Replacement}
+        In order to answer \hyperref[sec:research-questions]{\textbf{RQ3}}, we attempt attacking with the use of a word-replacement algorithm. Within this section, I will be discussing the implementation of the algorithm as well as the particular variations that we choose to evaluate.
+
+        The algorithm is dependent on appropriately identifying the grammatical nature of each word, as to find an apt replacement. An immediate solution to this is available in the form of Flair's POS Tagger \citep{akbik2018coling}, which is a low-cost model that provides grammatical insight into a sentence.
+
+        The POS tagger is paired with WordNet \citep{wordnet1998fellbaum} which recognises 155,327 distinct words. Linked to these recognised words, there is 117,597 sets of synonyms, known as Synsets. Notably, two words can be linked to the same Synset. The actual statistics of available words is added as an appendix.
+
+        With the knowledge of a word and its grammatical structure, we can apply word-replacement by searching the related Synset and selecting an option from here. Our selection from the Synset is a random sample, as the set is unordered. This synonym choice could be improved by picking the most similar word, according to word embedding model, such as Word2Vec.
+
+        Hence, we can summarise our algorithm as follows:
+        \begin{enumerate}
+            \item \textbf{Tagging}: Grammatically tag the document with Flair's POS.
+            \item \textbf{Select Words}: Select words to replace based on percentage or word-type.
+            \item \textbf{Find Synonyms}: With respect to the selected words and grammar, collect potential synonyms.
+            \item \textbf{Choose Synonym}: Randomly sample a choice from the synonym set.
+            \item \textbf{Rebuild Document}: Rebuild the document, replacing the chosen words.
+        \end{enumerate}
+
+        The selection outlined as Step (2) is where we introduce algorithm variations. With a tagged document, we could randomly replace a given percentage of the document. This has flaws as WordNet is not accustomed to dealing with verb replacement of differing tenses. To deal with this, we could choose to replace all the nouns or adjectives. However, importantly, by limiting to certain grammar, we risk not replacing many words.
+
+        In this paper, we choose to attack with a \emph{noun-replacement} approach as well as \emph{25\% of words replacement} approach. Noun-replacement was chosen as the library recognises more nouns than any other type of word combined, as mentioned in WordNet stats found in the appendix. The percentage attack is selected to match the green list fraction, as mentioned in Section~\ref{sec:watermark-implementation}. 
+
+        The attack of this algorithm will provide exactly the results necessary to discuss \hyperref[sec:research-questions]{\textbf{RQ3}} effectively.
 
 \section{Evaluation Stage}
+    The most important part of our method stage is our evaluation. This section will discuss our evaluation strategy as well as the necessary metrics for understanding our results. The approach we have taken to evaluation is graphically outlined in Figure~\ref{fig:method-flow-chart}. 
+    
+    Our main topics are detection, similarity and perplexity. These topics are intended measure watermark strength, paraphrase quality and text quality respectively. 
+    
     \subsection{Watermark Detection}
+        \begin{itemize}
+            \item Z-score definition
+            \item Type-I, Type-II errors / TPR, FNR definitions
+            \item AUROC 
+            \item Maryland detection implementation 
+        \end{itemize}
+        
     \subsection{Document Similarity}
+        \begin{itemize}
+            \item Paraphrase similarity vs paragraph similarity.
+            \item Example to showcase issues.
+            \item Our implementation of paraphrase similarity.
+        \end{itemize}
+
+    \subsection{Perplexity Measure}
+        \begin{itemize}
+            \item Perplexity definition
+            \item Model used for perplexity and why
+        \end{itemize}
 
 \section{Collection Stage}
     \subsection{Results}
         Discussion here about expected results size. Dataframe size and whatnot.
-    
-\section{Implementation of Maryland Watermark}
-    The Maryland Watermark \citep{kirchenbauer2023watermark} made the code publicly available, which aided in customising the method for my purposes.
 
-    The implementation leverages the internals of HuggingFace and PyTorch. The figure \ref{fig:draw-this-figure} portrays the point at which changes are made. The post-training addition is a key selling point of the method, allowing for pre-existing models to adopt watermarking.
-
-    % Think about what else to discuss here. Perhaps the delta and gamma scores? I fix these in my work so maybe reference as to why.
-
-\section{Fine-tuning of a Paraphraser}
-    The DIPPER paper \citep{krishna2023paraphrasing} provided the dataset, which is a processed version of the Par3 dataset \citep{Par3_2022}. Whilst the fine-tuned model was similarly available, the computational cost was too great. Hence, I fine-tuned a lower-cost variation.
-
-    \subsection{Chosen Model}
-        Respecting the initial paper, T5 was the chosen Seq2Seq model architecture for the paraphrasing task. The pretrained model was designed to investigate the potential of transfer-learning, hence lending itself to paraphrasing comfortably. 
-
-        Within T5, numerous options are available. The paper, presented by \citet{tay2022scale}, provides analysis into efficient scaling as well as model checkpoints to be exploited. Amongst the efficient models, a DeepNarrow architecture is recommended to improve performance. This led to the decision to fine-tune the T5-Efficient-Large-NL32, where NL32 refers to the number of transformer blocks and Large refers to the approximately 1 billion parameters.
-
-    \subsection{Training Approach}
-        The initial paper fine-tuned their model on $\sim$6,000,000 paraphrase pairs, taking between 384 and 768 GPU hours \citep{krishna2023paraphrasing}. Incapable of replicating the same compute periods, the model I produced was fine-tuned on 100,000 paraphrase pairs, taking 14 GPU hours.
-        Further specifications into the training arguments are in the appendix. % Refer to appendix.
-
-        The dataset provided by DIPPER is split between Google translated and human translated. These sections are further split into nondescript subsections. In an effort to replicate the original paper to the fullest, both sections were sampled, taking a uniform distribution of documents from the respective subsections. 
-        The dataset used is now publicly available.
-        
-\section{Generating Results} % Name this something better
-    The watermark can only be applied at inference stage, hence the data generation process required to begin with creating watermarked documents. 
-
-    \subsection{Watermarking Documents}
-        How did this process function? Provided a prompt, the chosen model would generate two essays, watermarked and unwatermarked. The generation was nucleus-sampling (should make it nucleus sampling) with $p = 0.8$ (give reasons for this?) \newline 
-
-    \subsection{Paraphrasing Documents}
-        This was a two pronged approach. Paraphrasing had to be completed many times, over many documents. Perhaps I could have used some distributed processing for this portion. 
-        I had to paraphrase with a sentence-based paraphraser as well as a paragraph-based.
-
-    \subsection{Evaluating Documents}
-        Respecting the initial threshold proposed by \citet{kirchenbauer2023watermark}, the Z-Score threshold was $z = 4.0$, based on the gamma and delta previously fixed ($\delta = 5.0, \gamma = 0.25$). 
 
 % \section{General points}
 % These points apply to the whole dissertation, not just this chapter.

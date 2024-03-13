@@ -26,7 +26,7 @@ def dipper_paraphrase_and_get_path(
             order: int,
             max_length=7500
     ):
-        input_text = f"lexical = {lexical}, order = {order} <sent> {text} </sent>"
+        input_text = f"lexical = {lexical}, order = {order} {text}"
 
         input_ids = tokenizer(
             input_text,
