@@ -90,6 +90,7 @@ def generate_documents_and_get_path(
 
     df.to_csv(output_path / output_file, index=False)
 
+    del df["text"]
     del model
     del tokenizer
 
