@@ -49,7 +49,8 @@ def evaluate_z_scores_and_get_path(
 
     para_paraphrased = sorted([column for column in df.columns if re.match("pp.*.para-[0-9]", column)])
     sent_paraphrased = sorted([column for column in df.columns if re.match("pp.*.sent-[0-9]", column)])
-    word_replaced = sorted([column for column in df.columns if re.match("pp.*.word-[0-9]", column)])
+    perc_word_replaced = sorted([column for column in df.columns if re.match("pp.*.perc.*.word-[0-9]", column)])
+    noun_word_replaced = sorted([column for column in df.columns if re.match("pp.*.noun.*.word-[0-9]", column)])
 
     for i, col in enumerate(para_paraphrased):
         para_pp = df[col]
@@ -61,13 +62,18 @@ def evaluate_z_scores_and_get_path(
         score_name = "nowm" if "kgw" not in col else "kgw"
         df[f"{score_name}-sent-zscore-{(i + 1) % no_paraphrases + 1}"] = paraphrase_scores(sent_pp)
 
-    for i, col in enumerate(word_replaced):
-        word_pp = df[col]
+    for i, col in enumerate(perc_word_replaced):
+        perc_word_pp = df[col]
         score_name = "nowm" if "kgw" not in col else "kgw"
-        df[f"{score_name}-word-zscore-{(i + 1) % no_paraphrases + 1}"] = paraphrase_scores(word_pp)
+        df[f"{score_name}-perc-word-zscore-{(i + 1) % no_paraphrases + 1}"] = paraphrase_scores(perc_word_pp)
 
-    output_path = Path(f"{target_dir}/evaluated/", parents=True, exist_ok=True)
-    output_file = f"evaluated_{df.shape[0]}_{date}.csv"
+    for i, col in enumerate(noun_word_replaced):
+        noun_word_pp = df[col]
+        score_name = "nowm" if "kgw" not in col else "kgw"
+        df[f"{score_name}-noun-word-zscore-{(i + 1) % no_paraphrases + 1}"] = paraphrase_scores(noun_word_pp)
+
+    output_path = Path(f"{target_dir}/z_scored/", parents=True, exist_ok=True)
+    output_file = f"z_scored_{df.shape[0]}_{date}.csv"
     df.to_csv(output_path / output_file, index=False)
 
     del tokenizer
@@ -79,6 +85,6 @@ if __name__ == "__main__":
     evaluate_z_scores_and_get_path(
         gamma=0.25,
         z_threshold=4.0,
-        input_dir="../../processed/similarity/similarity_448_05_03_2024.csv",
+        input_dir="../../processed/similarity/similarity_497_17_03_2024.csv",
         target_dir="../../processed/"
     )

@@ -41,9 +41,10 @@ def generate_documents_and_get_path(
                                                        gamma=gamma, delta=delta,
                                                        seeding_scheme="simple_1")
     kgw_sampled_answers = []
+    unwatermarked_essays = []
 
-    unwatermarked_essays = df["text"]
     tasks = df["instructions"]
+    # unwatermarked_essays = df["text"]
 
     def generate_essay(model_inputs, logitslist=None):
         # Setting `pad_token_id` to `eos_token_id` for open-ended generation.
@@ -85,12 +86,16 @@ def generate_documents_and_get_path(
         kgw_output_text = generate_essay(model_inputs, LogitsProcessorList([kgw_watermark_processor]))
         kgw_sampled_answers.append(kgw_output_text)
 
+        nwmark_output_text = generate_essay(model_inputs)
+        unwatermarked_essays.append(nwmark_output_text)
+
     df["kgw-watermarked"] = kgw_sampled_answers
     df["non-watermarked"] = unwatermarked_essays
 
+    df.drop(columns=["text"])
+
     df.to_csv(output_path / output_file, index=False)
 
-    del df["text"]
     del model
     del tokenizer
 

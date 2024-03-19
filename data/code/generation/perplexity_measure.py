@@ -42,7 +42,7 @@ def evaluate_perplexity_on_dataframe(input_dir, target_dir, model_name="facebook
     date = datetime.now().strftime("%d_%m_%Y")
 
     df = pd.read_csv(input_dir)
-    irrelevant_columns = ["id", "text", "instructions", *[col for col in df.columns if "sim" in col or "zscore" in col]]
+    irrelevant_columns = ["id", "instructions", *[col for col in df.columns if "sim" in col or "zscore" in col]]
     relevant_columns = [col for col in df.columns if col not in irrelevant_columns]
 
     model = AutoModelForCausalLM.from_pretrained(model_name, device_map="cuda")
@@ -59,11 +59,10 @@ def evaluate_perplexity_on_dataframe(input_dir, target_dir, model_name="facebook
 
     return output_path / output_file
 
-
 if __name__ == "__main__":
-    path = "../../processed/evaluated/evaluated_497_10_03_2024.csv"
+    path = "../../processed/z_scored/z_scored_498_18_03_2024.csv"
     evaluate_perplexity_on_dataframe(
         input_dir=path,
-        target_dir="../../processed/",
+        target_dir="../../processed/testing/",
         model_name="facebook/opt-2.7b"
     )

@@ -4,7 +4,7 @@ from evaluate import load
 model_name = "mistralai/Mistral-7B-Instruct-v0.2"
 perplexity = load("perplexity", module_type="metric")
 
-df = pd.read_csv("../../data/processed/evaluated/evaluated_497_10_03_2024.csv")
+df = pd.read_csv("../../data/processed/z_scored/evaluated_497_10_03_2024.csv")
 
 wmarked = df["kgw-watermarked"]
 pp_para = df["pp-kgw-para-1"]

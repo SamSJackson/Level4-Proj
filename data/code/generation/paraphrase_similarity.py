@@ -27,23 +27,54 @@ def calculate_similarity_and_get_path(
 
     df = pd.read_csv(input_dir)
 
-    created_para_sims_columns = [f"pp-para-sim-{i}" for i in range(1, no_paraphrases+1)]
-    df[created_para_sims_columns] = df.apply(lambda row:
+    created_kgw_para_sims_columns = [f"pp-kgw-para-sim-{i}" for i in range(1, no_paraphrases+1)]
+    df[created_kgw_para_sims_columns] = df.apply(lambda row:
                                              evaluate(sim_object, row['kgw-watermarked'], [row[f"pp-kgw-para-{i}"] for i in range(1, no_paraphrases+1)]),
                                              axis='columns',
                                              result_type='expand')
 
-    created_sent_sims_columns = [f"pp-sent-sim-{i}" for i in range(1, no_paraphrases + 1)]
+    created_nowm_para_sims_columns = [f"pp-nowm-para-sim-{i}" for i in range(1, no_paraphrases + 1)]
+    df[created_nowm_para_sims_columns] = df.apply(lambda row:
+                                             evaluate(sim_object, row['non-watermarked'], [row[f"pp-unwatermarked-para-{i}"] for i in range(1, no_paraphrases + 1)]),
+                                             axis='columns',
+                                             result_type='expand')
+
+    created_sent_sims_columns = [f"pp-kgw-sent-sim-{i}" for i in range(1, no_paraphrases + 1)]
     df[created_sent_sims_columns] = df.apply(lambda row:
                                              evaluate(sim_object, row['kgw-watermarked'], [row[f"pp-kgw-sent-{i}"] for i in range(1, no_paraphrases + 1)]),
                                              axis='columns',
                                              result_type='expand')
 
-    created_word_sims_columns = [f"pp-word-sim-{i}" for i in range(1, no_paraphrases + 1)]
-    df[created_word_sims_columns] = df.apply(lambda row:
-                                             evaluate(sim_object, row['kgw-watermarked'], [row[f"pp-kgw-word-{i}"] for i in range(1, no_paraphrases + 1)]),
+    created_nowm_sent_sims_columns = [f"pp-nowm-sent-sim-{i}" for i in range(1, no_paraphrases + 1)]
+    df[created_nowm_sent_sims_columns] = df.apply(lambda row:
+                                                  evaluate(sim_object, row['non-watermarked'],[row[f"pp-unwatermarked-sent-{i}"] for i in range(1, no_paraphrases + 1)]),
+                                                  axis='columns',
+                                                  result_type='expand')
+
+
+    created_perc_word_sims_columns = [f"pp-kgw-perc-word-sim-{i}" for i in range(1, no_paraphrases + 1)]
+    df[created_perc_word_sims_columns] = df.apply(lambda row:
+                                             evaluate(sim_object, row['kgw-watermarked'], [row[f"pp-kgw-perc-word-{i}"] for i in range(1, no_paraphrases + 1)]),
                                              axis='columns',
                                              result_type='expand')
+
+    created_perc_nowm_word_sims_columns = [f"pp-nowm-perc-word-sim-{i}" for i in range(1, no_paraphrases + 1)]
+    df[created_perc_nowm_word_sims_columns] = df.apply(lambda row:
+                                                  evaluate(sim_object, row['non-watermarked'], [row[f"pp-unwatermarked-perc-word-{i}"] for i in range(1, no_paraphrases + 1)]),
+                                                  axis='columns',
+                                                  result_type='expand')
+
+    created_noun_word_sims_columns = [f"pp-kgw-noun-word-sim-{i}" for i in range(1, no_paraphrases + 1)]
+    df[created_noun_word_sims_columns] = df.apply(lambda row:
+                                             evaluate(sim_object, row['kgw-watermarked'], [row[f"pp-kgw-noun-word-{i}"] for i in range(1, no_paraphrases + 1)]),
+                                             axis='columns',
+                                             result_type='expand')
+
+    created_noun_nowm_word_sims_columns = [f"pp-nowm-noun-word-sim-{i}" for i in range(1, no_paraphrases + 1)]
+    df[created_noun_nowm_word_sims_columns] = df.apply(lambda row:
+                                                  evaluate(sim_object, row['non-watermarked'], [row[f"pp-unwatermarked-noun-word-{i}"] for i in range(1, no_paraphrases + 1)]),
+                                                  axis='columns',
+                                                  result_type='expand')
 
     output_path = Path(f"{target_dir}/similarity/", parents=True, exist_ok=True)
     output_file = f"similarity_{df.shape[0]}_{date}.csv"
@@ -56,6 +87,6 @@ def calculate_similarity_and_get_path(
 
 if __name__ == "__main__":
     calculate_similarity_and_get_path(
-        input_dir="../../processed/cleaned_paraphrased/clean_448_03_03_2024.csv",
-        target_dir="../../processed/testing/"
+        input_dir="../../processed/cleaned_paraphrased/clean_497_17_03_2024.csv",
+        target_dir="../../processed/"
     )

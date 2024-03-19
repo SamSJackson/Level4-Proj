@@ -32,3 +32,9 @@ def clean_paraphrases_and_get_path(
     df.to_csv(output_path / output_file, index=False)
 
     return output_path / output_file
+
+if __name__ == "__main__":
+    clean_paraphrases_and_get_path(
+        input_dir="../../processed/paraphrased/noun_word_replaced_500_17_03_2024.csv",
+        target_dir="../../processed/"
+    )
