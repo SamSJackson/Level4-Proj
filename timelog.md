@@ -94,7 +94,6 @@ Hours Total: 10.5
 ### Week 3 Summary
 Hours Total: 7 hours
 
-
 ## Week 4
 
 ### Oct 11 2023
@@ -150,53 +149,313 @@ Hours Total: 9 hours
 # PROBABLY FILL THIS IN 
 
 ## Week 7 30th Oct - 5th Nov
+### 31st Oct
+* *2 hours* Evaluate generated samples from last week
+* *1 hour* Create images and sort for Jake
+* *0.5 hours* Meeting agenda for Jake
+  
+### 1st Nov
+* *2 hours* Looking into how ROC curves are generated / understand them
+* *0.5 hours* Meeting with Jake
 
+### 2nd Nov
+* *1.5 hours* Paper on super simple watermarks: [Sato Paper](https://arxiv.org/pdf/2310.08920.pdf)
+ 
 ### Week 7 Summary
+Hours total: 7.5 hours
 
 ## Week 8 6th Nov - 12th Nov
 
+* *0 hours* Nothing was done this week, not even meeting.
+
 ### Week 8 Summary 
+Hours total: 0 hours
 
 ## Week 9 13th Nov - 19th Nov
 
+### 13th Nov
+* *0.5 hours* Meeting agenda for Jake
+* *1 hour* Computer starts to break so lots of backing up.
+
+### 14th Nov
+* *0.5 hours* Meeting with Jake
+* *3 hours* Method created for cmd-line allowing users to generate watermarked text
+
+### 15th Nov 
+* *2 hours* Computer fully packs it in. Will not boot.
+ 
 ### Week 9 Summary
+Hours total: 7 hours
 
 ## Week 10 20th Nov - 26th Nov
 
+### 20th Nov
+* *0.5 hours* Tell Jake that work has not been done this week (send him meeting agenda)
+* *1 hours* Troubleshooting PC
+* *2 hours* Wiping all computer hard drives. Clean installation of Ubuntu.
+
+### 24st Nov
+* *2 hours* Remove graphics card and reinstall Linux.
+* *1 hour* Attempt some further reading with Semantics-based Watermark [Jie Ren Paper](https://arxiv.org/pdf/2311.08721.pdf) 
+
 ### Week 10 Summary
+Hours total: 6.5 hours
 
 ## Week 11 27th Nov - 3rd Dec
 
+### 27th Nov 
+* *1 hour* Build a new computer.
+* *2 hours* Setting up python environments and recollecting important data.
+* *0.5 hours* Create and send Jake agenda
+
+### 28th Nov
+* *0.5 hours* Meeting with Jake
+
+### 29th Nov 
+* *0.5 hours* Create confusion matrices
+* *1 hours* Create ROC curves 
+
 ### Week 11 Summary
+Hours total: 5.5 hours 
 
 ## Week 12 3rd Dec - 10th Dec
+### 3rd Dec
+* *0.5 hours* Send Jake meeting agenda 
+* *2 hours* The finetuning performance of the century - preliminary tests into finetuning a DIPPER-like model.
 
+### 4th Dec
+*0.5 hours* Online meeting with Jake
+
+### 5th Dec
+* *2 hours* Evaluate fast finetuning of DIPPER.
+* *1 hour* Realise that training data was invalid - incorrectly sampled original dataset.
+
+### 6th Dec
+* *1 hour* Recreate training dataset
+* *1 hour* Setup finetuning to run overnight and complete overnight finetuning on 25,000 samples
+
+### 7th Dec
+* *1 hour* Evaluate finetuned paraphraser
+
+### 8th Dec
+* *2 hours* Investigate sentece similarity processing
+* *1 hour* Evaluate paraphraser using sentence similarity 
 
 ### Week 12 Summary
+Hours total: 11 hours
 
 # Semester 2
 ## Week 1 8th Jan - 14th Jan
 
+### 8th Jan 
+* *2 hours* Trying out generation with Llama-2-7b.
+* *1 hour* Finetuning for DIPPER with T5 instead of BART
+* *0.5 hours* Setting up finetuning to run overnight
+
+### 12th Jan 
+* *1 hour* Reading paper on appropriate t5 variation: [Scaling Efficiently](https://arxiv.org/pdf/2109.10686.pdf)
+* *1 hour* Decide on google/t5-large-efficient-nl32 for DIPPER variation
+
 ### Week 1 Summary
+Hours total: 5.5 hours
 
 ## Week 2 15th Jan - 21st Jan
 
+## 15th Jan 
+* *1.5 hours* Using Mistral-7b for generating documents
+* *1 hour* Scatter plots to evaluate watermark impact and show Jake results so far
+* *1 hour* Meeting agenda for Jake
+
+## 16th Jan
+* *1 hour* Decide on Mistral-7b-Instruct-v0.2 for document generation
+* *3 hours* Change from article dataset, moving towards DAIGT dataset of instruction prompts 
+
+## 17th Jan
+* *0.5 hours* Meeting with Jake
+
+## 20th Jan 
+* *2 hours* Prep and use DAIGT dataset to produce sample datasets.
+
 ### Week 2 Summary
+Hours total: 10 hours
 
 ## Week 3 22nd Jan - 28th Jan
 
+### 22nd Jan 
+* *0.5 hours* Agenda to send Jake
+
+### 24th Jan
+* *0.5 hours* Meeting with Jake
+* *1 hour* Reading dissertation requirements
+* *1 hour* Setting up dissertation system on github and overleaf.
+
+## 25th Jan 
+* *2 hours* Reading Kirchenbauer follow-up paper on reliability of watermarking generative text: [Kirchenbauer Paper](https://arxiv.org/pdf/2306.04634.pdf)
+
 ### Week 3 Summary
+Hours total: 5 hours
 
 ## Week 4 29th Jan - 4th Feb
 
+Nothing done this week - not even a meeting with Jake
+
 ### Week 4 Summary
+Hours total: 0 hours
 
 ## Week 5 5th Feb - 11th Feb
 
+### 5th Feb 
+* *0.5 hours* Meeting agenda for Jake
+* *1 hour* Structuring background
+* *2 hours* Mindmapping progress and future plans for project.
+
+### 7th Feb
+* *0.5 hours* Meeting with Jake
+
+### 11th Feb 
+* *1 hour* Re-sampling kPar3 dataset, 100,000 samples for all sections.
+* *2.5 hours* Finetuning t5 again, for DIPPER, on 100,000 samples.
+* *0.5 hours* Setting up finetune to run overnight
+
 ### Week 5 Summary
+Hours total: 8 hours
 
 ## Week 6 12th Feb - 18th Feb
 
+### 12th Feb
+* *0.5 hours* Meeting agenda for Jake
+
+### 14th Feb
+* *0.5 hours* Meeting with Jake
+
+### 16th Feb
+* *1 hour* Researching Flair library.
+* *2 hour* Using Flair POS for word-replacement
+* *1 hour* Completing primitive word-replacement algorithm
+
+### 17th Feb 
+* *1.5 hours* Basic evaluation using the word-replacement algorithm
+* *1 hour* Write word-replacment algorithm into component of dissertation
+
+### 18th Feb 
+* *1 hour* Structuring method of dissertation
+
 ### Week 6 Summary
+Hours total: 8.5 hours
 
+## Week 7 19th Feb - 25th Feb
 
+### 19th Feb 
+* *1 hour* Refactoring similarity implementation
+* *1.5 hour* Removing thickstun implementation of watermark - focusing on Maryland
+* *0.5 hours* Meeting agenda for Jake
+
+### 21st Feb 
+* *0.5 hours* Meeting with Jake
+* *1 hour* Realise that background is written incorrectly and restructure again.
+
+### 23th Feb
+* *1 hour* Generating 200 samples with Mistral.
+* *1.5 hour* Look into sentence-based paraphraser models
+
+### Week 7 Summary
+Hours total: 7 hours
+
+## Week 8 26th Feb - 3rd March
+
+### 26th Feb 
+* *0.5 hours* Meeting agenda for Jake
+
+### 28th Feb
+* *0.5 hours* Meeting with Jake
+
+### 1st March
+* *1 hour* Finetuning again? DIPPER once more.
+* *1 hour* Begin structuring pipeline process for generating data
+
+### 2nd March
+* *0.5 hours* Structuring results section
+* *0.5 hour* Writing up my research questions
+* *1 hour* Writing some of my method
+* *0.5 hours* Table for results section
+
+### 3rd March
+* *2 hours* Complete pipelining structure of generation process.
+
+### Week 8 Summary
+Hours total: 7.5 hours
+
+## Week 9 4th March - 10th March
+
+### 4th March
+* *0.5 hours* Meeting agenda for Jake
+* *1 hour* Writing my background - how embedding works
+* *1 hour* Background research - figure out causal models work apparently
+
+### 6th March
+* *0.5 hours* Meeting with Jake
+
+### 9th March
+* *2 hours* Improve pipeline process, avoid copying df and just write to disk.
+* *0.5 hours* Remove generating non-watermarked documents.
+* *1 hour* Decide that we do not need non-watermarked documents
+* *1 hour* Prep generation of more documents and run overnight
+
+### 10th March
+* *0.5 hours* Make sure generation has worked and explore data
+* *1 hour* Create graphs from data
+ 
+### Week 9 Summary
+Hours total: 9 hours
+
+## Week 10 11th March - 17th March
+
+### 11th March
+* *1 hour* Writing method of dissertation
+* *0.5 hours* Meeting agenda for Jake
+
+### 13th March
+* *0.5 hours* Meeting with Jake and realise that background is wrong
+* *3 hours* Re-write and restructure background
+
+### 14th March
+* *1 hour* Writing method still, lots of restructuring here
+* *2 hour* Padding out method with figures
+* *1 hour* Spending my life on Figma, making images
+
+### 15th March
+* *1 hour* I will never see the sun again. Continue writing my dissertation.
+* *0.5 hours* Finish background and send to Jake for feedback.
+* *1 hour* Decide that I want generated non-watermarked documents back.
+* *1 hour* Prep the data to run again with generation of non-watermarked documents
+
+### 17th March
+* *3 hours* A damn workhorse. Writing the introduction
+* *1 hour* Evaluate data and write results section.
+* *2 hours* Making graphs for results and deciding response to questions.
+* *1 hour* Cleaning up information in background
+
+### Week 10 Summary
+Hours total: 18.5 hours
+
+## Week 18th March - 22nd March
+
+### 18th March
+* *0.5 hours* Not panicking at all. Calmly writing my dissertation
+* *1 hour* Mindmap remaining progress
+* *1 hour* Sketching remaining figures
+* *2 hours* Cleaning up with respect to Jake's feedback
+* *3 hours* 
+
+### 19th March
+* *0.5 hours* Make meeting agenda for Jake
+* *2 hours* Results analysis and editing.
+* *2 hours* Write conclusion
+* *1 hour* Look into finishing abstract
+
+### 20th March
+* *1 hour* Finish abstract
+* *0.5 hours* Forget to send agenda but meet with Jake
+
+### Week 11 Summary
+Hours total: Ongoing
