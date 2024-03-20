@@ -445,7 +445,7 @@ Hours total: 18.5 hours
 * *1 hour* Mindmap remaining progress
 * *1 hour* Sketching remaining figures
 * *2 hours* Cleaning up with respect to Jake's feedback
-* *3 hours* 
+* *3 hours* Fixing background and panicking about method.
 
 ### 19th March
 * *0.5 hours* Make meeting agenda for Jake
