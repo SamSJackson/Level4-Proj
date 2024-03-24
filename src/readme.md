@@ -1,41 +1,30 @@
 # Readme
 
-Put a brief description of your code here. This should at least describe the file structure.
+This dissertation is a research-focused project. Consequently, there is a significant amount of data required to do our computations.
+
+As the data is too large to push to Git, most of the data is not provided. However, the data required for reproducing the results in the dissertation are available.
+
+All the analysis found in the project is based off of the data in `data/processed/perplexity/perplexity_498_18_03_2024.csv`
+
+The code, in the `code` folder, are scripts which generate more data for further analysis, beyond the data mentioned above.
 
 ## Build instructions
 
-**You must** include the instructions necessary to build and deploy this project successfully. If appropriate, also include 
-instructions to run automated tests. 
+To build and deploy this project, I have provided an **anaconda** environment list.
 
 ### Requirements
+Anaconda is required for installation. 
 
-List the all of the pre-requisites software required to set up your project (e.g. compilers, packages, libraries, OS, hardware)
+Using the `src/requirements.txt` file, install all the necessary software through the command:
 
-For example:
+`conda create --name wmark-pt --file requirements.txt`
 
-* Python 3.7
-* Packages: listed in `requirements.txt` 
+* Python 3.11
+* Packages: listed in `src/requirements.txt` 
 * Tested on Windows 10
 
-or another example:
+This will create an anaconda environment named `wmark-pt` and allow you to run all the commands.
 
-* Requires Raspberry Pi 3 
-* a Linux host machine with the `arm-none-eabi` toolchain (at least version `x.xx`) installed
-* a working LuaJIT installation > 2.1.0
+Admittedly, you will still have to download the large language models to run the scripts. HuggingFace will automatically download and cache the models as you require them.
 
-### Build steps
-
-List the steps required to build software. 
-
-Hopefully something simple like `pip install -e .` or `make` or `cd build; cmake ..`. In
-some cases you may have much more involved setup required.
-
-### Test steps
-
-List steps needed to show your software works. This might be running a test suite, or just starting the program; but something that could be used to verify your code is working correctly.
-
-Examples:
-
-* Run automated tests by running `pytest`
-* Start the software by running `bin/editor.exe` and opening the file `examples/example_01.bin`
 
