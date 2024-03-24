@@ -10,8 +10,8 @@ from data.code.implementation.wieting.measure import make_sim_object, evaluate
 def calculate_similarity_and_get_path(
         input_dir: str,
         no_paraphrases: int = 3,
-        wieting_path: str = "../implementation/wieting",
-        target_dir: str = "../../processed/"
+        wieting_path: str = "implementation/wieting",
+        target_dir: str = "../processed/"
 ):
     date = datetime.now().strftime("%d_%m_%Y")
 

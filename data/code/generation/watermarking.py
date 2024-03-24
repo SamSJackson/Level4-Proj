@@ -7,13 +7,12 @@ import torch.cuda
 from transformers import AutoTokenizer, AutoModelForCausalLM, AutoConfig, LogitsProcessorList
 from data.code.implementation.maryland.extended_watermark_processor import WatermarkLogitsProcessor
 
-
 def generate_documents_and_get_path(
         gamma: float,
         delta: float,
         no_documents: int,
-        target_dir: str = "../../processed/",
-        input_dir: str = "../../prepared/train/daigt/daigt_prompts.csv"
+        target_dir: str = "../processed/",
+        input_dir: str = "../prepared/train/daigt/daigt_prompts.csv"
 ):
     access_token = os.environ['HF_ACCESS_TOKEN']
 

@@ -1,6 +1,6 @@
-import pandas as pd, numpy as np
-import torch, evaluate
-from datasets import Dataset, load_dataset
+import torch
+import evaluate
+from datasets import load_dataset
 from datetime import datetime
 from transformers import (
     AutoModelForSeq2SeqLM,
@@ -63,7 +63,7 @@ def compute_metrics(eval_pred):
 
 training_args = Seq2SeqTrainingArguments(report_to="none",
                                          output_dir="practice/",
-                                         evaluation_strategy="no",# Set to epoch after compute_metrics problem fixed.
+                                         evaluation_strategy="no",  # Set to epoch after compute_metrics problem fixed.
                                          learning_rate=1e-4,
                                          gradient_checkpointing=True,
                                          bf16=True,

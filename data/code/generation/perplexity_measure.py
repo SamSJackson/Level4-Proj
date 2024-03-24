@@ -5,7 +5,6 @@ from tqdm import tqdm
 from pathlib import Path
 from datetime import datetime
 
-from evaluate import load
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 def compute_perplexity(model, tokenizer, documents):

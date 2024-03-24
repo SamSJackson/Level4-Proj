@@ -28,6 +28,7 @@ from transformers import LogitsProcessor
 from data.code.implementation.maryland.normalizers import normalization_strategy_lookup
 from data.code.implementation.maryland.alternative_prf_schemes import prf_lookup, seeding_scheme_lookup
 
+
 class WatermarkBase:
     def __init__(
         self,

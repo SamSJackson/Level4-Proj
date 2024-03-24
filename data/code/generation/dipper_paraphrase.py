@@ -49,7 +49,7 @@ def dipper_paraphrase_and_get_path(
         return res
 
     tokenizer = AutoTokenizer.from_pretrained("google/t5-efficient-large-nl32")
-    model_path = "../finetuning/saved/google-t5-efficient-large-nl32-finetuned"
+    model_path = "finetuning/saved/google-t5-efficient-large-nl32-finetuned"
     model = AutoModelForSeq2SeqLM.from_pretrained(model_path, device_map=device)
 
     df = pd.read_csv(input_dir)

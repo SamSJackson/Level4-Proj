@@ -6,7 +6,7 @@ from datetime import datetime
 
 def clean_paraphrases_and_get_path(
         input_dir: str,
-        target_dir: str = "../../processed/"
+        target_dir: str = "../processed/"
 ):
     date = datetime.now().strftime("%d_%m_%Y")
 

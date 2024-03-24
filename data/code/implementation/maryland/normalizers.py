@@ -11,7 +11,8 @@ from functools import cache
 
 import re
 import unicodedata
-import data.code.implementation.maryland.homoglyphs as hg
+
+from data.code.implementation.maryland import homoglyphs as hg
 
 def normalization_strategy_lookup(strategy_name: str) -> object:
     if strategy_name == "unicode":

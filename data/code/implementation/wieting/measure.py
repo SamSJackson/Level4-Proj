@@ -1,6 +1,5 @@
 import numpy as np
 
-from data.code.implementation.wieting.models import load_model
 from data.code.implementation.wieting.utils import Example
 
 def cosine(u, v):
