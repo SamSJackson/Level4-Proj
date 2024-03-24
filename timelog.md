@@ -438,7 +438,7 @@ Hours total: 9 hours
 ### Week 10 Summary
 Hours total: 18.5 hours
 
-## Week 18th March - 22nd March
+## Week 18th March - 24th March
 
 ### 18th March
 * *0.5 hours* Not panicking at all. Calmly writing my dissertation
@@ -457,5 +457,12 @@ Hours total: 18.5 hours
 * *1 hour* Finish abstract
 * *0.5 hours* Forget to send agenda but meet with Jake
 
+### 21st March
+* *0 hours* VERY SICK
+
+### 24th March
+* *1 hour* Finish timelog and prep submission.
+* *2 hour* Complete submission process.
+
 ### Week 11 Summary
-Hours total: Ongoing
+Hours total: 17.5 hours
