@@ -7,12 +7,12 @@ __pycache__/
 *.so
 
 # Model folders
-data/code/finetuning/cache_dir
-data/code/finetuning/practice
-data/code/finetuning/runs
-data/code/finetuning/wandb
-data/code/finetuning/saved
-data/code/implementation/wieting/paraphrase-at-scale-english
+src/code/finetuning/cache_dir
+src/code/finetuning/practice
+src/code/finetuning/runs
+src/code/finetuning/wandb
+src/code/finetuning/saved
+src/code/implementation/wieting/paraphrase-at-scale-english
 
 # Data Folders
 */20news-bydate-test/
